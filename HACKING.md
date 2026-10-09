@@ -163,18 +163,28 @@ Installing ICU
 If cluster counting is enabled (see the ``enable-cluster-counting`` flag above, enabled by default), then you will need the [ICU](http://site.icu-project.org) library
 to be installed. See the [text-icu Prerequisites documentation](https://github.com/haskell/text-icu#prerequisites) for how to install ICU on your system.
 
-`zlib` and `ncurses` Dependency
--------------------------------
+`ncurses` and `gmp` Dependencies
+--------------------------------
 
 Non-Windows users need to ensure that the development files for the C
-libraries *zlib* and *ncurses* are installed (see https://zlib.net
-and https://www.gnu.org/software/ncurses/). Your package manager may be
-able to install these files for you. For instance, on Debian or Ubuntu
-it should suffice to run
+libraries *ncurses* (see https://www.gnu.org/software/ncurses/) and
+*GMP* (see https://gmplib.org) are installed: Agda's command line uses
+ncurses through `haskeline`, and GHC's bignum backend links against GMP.
+A finished `agda` binary links `libtinfo` and `libgmp` and nothing else
+beyond the C runtime, so these two are the whole list. Your package
+manager may be able to install these files for you. For instance, on
+Debian or Ubuntu it should suffice to run
 
-    apt-get install zlib1g-dev libncurses5-dev
+    apt-get install libncurses-dev libgmp-dev
 
-as root to get the correct files installed.
+as root to get the correct files installed. Older releases call the
+ncurses package `libncurses5-dev`; on current Debian there is no such
+package at all, which is worth knowing if you are following older
+instructions.
+
+*zlib* is no longer needed. Interface files are compressed with
+[zstd](https://facebook.github.io/zstd/), whose Haskell bindings build
+the C library from bundled sources rather than linking a system one.
 
 Keeping the Default Environment Clean
 --------------------------------------

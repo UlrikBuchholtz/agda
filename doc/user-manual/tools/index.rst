@@ -8,6 +8,7 @@ Tools
 .. toctree::
    :maxdepth: 2
 
+   agent-interface
    auto
    command-line-options
    compilers

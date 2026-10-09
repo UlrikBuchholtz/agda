@@ -8,6 +8,8 @@ module Agda.Utils.IO.UTF8
   , Agda.Utils.IO.UTF8.readFile
   , Agda.Utils.IO.UTF8.writeFile
   , writeTextToFile
+  , convertLineEndings
+  , stripUtf8Bom
   ) where
 
 import Control.Exception

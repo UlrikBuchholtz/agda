@@ -1,0 +1,131 @@
+>>> 1 (malformed request)
+error:
+  code: "parseError"
+  message:
+    Unexpected "this is not json", expecting JSON value
+>>> 2 load
+result:
+  checked: true
+  errors: []
+  file: "Errors.agda"
+  goals:
+    - id: 0
+      range: Errors.agda 10:13@163-10:17@167
+      type: "Bool"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    1 goal
+    ?0 : Bool
+  warnings: []
+>>> 3 nonesuch
+error:
+  code: "unknownMethod"
+  message:
+    unknown method "nonesuch"; known methods: handshake, status, load, reload, goals, goal, context, check, checkCandidates, infer, normalise, constraints, helperType, search, findNames, buildIndex, moduleContents, whyInScope, definitionAt, give, elaborate, refine, intro, case, solve, auto, abort, close
+>>> 4 goal
+error:
+  code: "unknownGoal"
+  data:
+    goals:
+      - id: 0
+        range: Errors.agda 10:13@163-10:17@167
+  message:
+    there is no goal ?42
+>>> 5 goal
+error:
+  code: "invalidParams"
+  message:
+    Error in $: key "goal" not found
+>>> 6 goal
+error:
+  code: "invalidParams"
+  message:
+    Error in $: unknown normalisation mode: very
+>>> 7 check
+result:
+  accepted: false
+  checked: true
+  error:
+    code: "UnequalTypes"
+    message:
+      Errors.agda:10.13-16: error: [UnequalTypes]
+      The type
+        Bool → Bool
+      is not a subtype of
+        Bool
+      when checking that the expression not has type Bool
+    range: Errors.agda 10:13@163-10:16@166
+    related:
+      - message:
+          when checking that the expression not has type Bool
+        range: Errors.agda 10:13@163-10:16@166
+      - message:
+          when checking that the expression ? has type Bool
+        range: Errors.agda 10:13@163-10:17@167
+      - message:
+          when checking that the clause not false = ? has type Bool → Bool
+        range: Errors.agda 10:1@151-10:17@167
+      - message:
+          when checking the definition of not
+        range: Errors.agda 9:1@133-10:17@167
+    severity: "error"
+  file: "Errors.agda"
+  goal:
+    id: 0
+    range: Errors.agda 10:13@163-10:17@167
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    rejected
+    Errors.agda:10.13-16: error: [UnequalTypes]
+    The type
+      Bool → Bool
+    is not a subtype of
+      Bool
+    when checking that the expression not has type Bool
+>>> 8 infer
+error:
+  agdaCode: "NotInScope"
+  code: "agdaError"
+  message:
+    1.1-15: error: [NotInScope]
+    Not in scope:
+      undefined-name at 1.1-15
+    when scope checking undefined-name
+  range: ? 1:1@0-1:15@14
+  related:
+    - message:
+        when scope checking undefined-name
+      range: ? 1:1@0-1:15@14
+>>> 9 goals
+result:
+  checked: true
+  errors: []
+  file: "Errors.agda"
+  goals:
+    - id: 0
+      range: Errors.agda 10:13@163-10:17@167
+      type: "Bool"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    1 goal
+    ?0 : Bool
+  warnings: []
+! file unchanged
+>>> 10 close
+result:
+  checked: true
+  closed: true
+  file: "Errors.agda"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    session closed

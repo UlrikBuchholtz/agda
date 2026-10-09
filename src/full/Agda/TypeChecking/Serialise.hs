@@ -23,7 +23,8 @@
 -- -!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-
 
 module Agda.TypeChecking.Serialise
-  ( InterfacePrefix
+  ( currentInterfaceVersion
+  , InterfacePrefix
   , Encoded
   , encode
   , encodeFile
@@ -31,7 +32,7 @@ module Agda.TypeChecking.Serialise
   , decodeFile
   , decodeInterface
   , deserializeInterface
-  , deserializeHashes
+  , readInterfacePrefix
   )
   where
 
@@ -39,6 +40,7 @@ import Prelude hiding ( null )
 
 import System.Directory ( createDirectoryIfMissing )
 import System.FilePath ( takeDirectory )
+import System.IO ( IOMode(ReadMode), withBinaryFile )
 
 import qualified Control.Exception as E
 import Control.Monad
@@ -65,6 +67,7 @@ import Agda.TypeChecking.Serialise.Base
 import Agda.TypeChecking.Serialise.Instances () -- instances only
 
 import Agda.Utils.CompactRegion qualified as Compact
+import Agda.Utils.FileName ( filePath )
 import Agda.Utils.Hash
 import Agda.Utils.HashTable qualified as H
 import Agda.Utils.IORef
@@ -271,7 +274,22 @@ encodeFile f i = do
 decodeFile :: FilePath -> TCM (Maybe Interface)
 decodeFile f = runMaybeT (decodeInterface =<< liftIO (B.readFile f))
 
-deserializeHashes :: ByteString -> IO (Maybe (Hash, Hash))
-deserializeHashes bstr =
-  (Just <$!> deserialize bstr)
-  `E.catch` \(E.ErrorCall _) -> pure Nothing
+-- | Read the uncompressed prefix of an interface file straight from
+--   disk: the source hash, the full hash and the interface version.
+--
+--   These are the same 'ifacePrefixSize' bytes that
+--   'deserializeInterface' splits off before decompressing, so this
+--   answers \"is this interface current, and what was it built from?\"
+--   without decoding anything.  'Nothing' if the file cannot be read,
+--   is shorter than the prefix, or does not begin with a well-formed
+--   one.
+readInterfacePrefix :: AbsolutePath -> IO (Maybe InterfacePrefix)
+readInterfacePrefix f = ioFailure $ decodeFailure $ do
+  bstr <- withBinaryFile (filePath f) ReadMode \ h ->
+            B.hGet h ifacePrefixSize
+  if B.length bstr < ifacePrefixSize
+    then pure Nothing
+    else Just <$!> deserialize bstr
+  where
+  ioFailure     = E.handle \ (_ :: E.IOException) -> pure Nothing
+  decodeFailure = E.handle \ (E.ErrorCall _)      -> pure Nothing

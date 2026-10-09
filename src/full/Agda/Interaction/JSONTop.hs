@@ -467,9 +467,11 @@ instance EncodeTCM Response where
     [ "interactionPoint"  @= i
     , "giveResult"        @= giveResult
     ]
-  encodeTCM (Resp_MakeCase id variant clauses) = kind "MakeCase"
+  encodeTCM (Resp_MakeCase id variant range clauses) = kind "MakeCase"
     [ "interactionPoint"  @= id
     , "variant"           @= variant
+      -- The source range the clauses replace.
+    , "range"             @= range
     , "clauses"           @= clauses
     ]
   encodeTCM (Resp_SolveAll solutions) = kind "SolveAll"

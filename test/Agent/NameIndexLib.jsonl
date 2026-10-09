@@ -1,0 +1,54 @@
+# The name index over a project that can have one: a library of five
+# modules with an .agda-lib of its own, so there is a build directory to
+# hold an index and interfaces to build it from.
+#
+# Every query is scoped to `Lib`, so that the counts do not depend on
+# how many modules Agda's own primitive library happens to have.
+!file Lib/Main.agda
+# Before anything is loaded the query works from the directory the
+# frontend runs in, which is the project root -- a lemma can be looked
+# for before the file that will use it exists.  Nothing has been checked
+# yet, so nothing can be in an index, and the answer says so.
+{"method":"findNames","params":{"pattern":"is-basis","module":"Lib"}}
+{"method":"load","params":{"file":"%FILE%"}}
+# Before any build.  Loading checked Lib.Main, so it is stale -- checked,
+# but no index has heard of it -- and the four modules nobody has checked
+# are unindexed.
+{"method":"findNames","params":{"pattern":"is-basis","module":"Lib"}}
+# The first build checks what has never been checked, so four of the five
+# modules land in the index.  Lib.Broken does not type-check: it stays
+# unindexed, which is the honest answer, since no rebuild would fix it.
+{"method":"buildIndex","params":{"module":"Lib"}}
+# The query the whole feature is for: hits in a module the loaded file
+# does not import.  `is-basis` exactly, then the two names it is a prefix
+# of -- one of them in a submodule, reached through the qualifier a
+# caller would have to write.
+{"method":"findNames","params":{"pattern":"is-basis","module":"Lib"}}
+# Lib.Reexport opens Lib.Basis publicly, so Bool is in its scope as well.
+# Entries are keyed on the name's own module, so it is found once, under
+# the module that defines it.
+{"method":"findNames","params":{"pattern":"Bool","module":"Lib","kinds":["DataName"]}}
+# A parameterised module's telescope is rendered once, as `params`,
+# rather than into the type of every name it defines.
+{"method":"findNames","params":{"pattern":"basis-of","module":"Lib"}}
+# Nothing has moved, so a second build does nothing at all.
+{"method":"buildIndex","params":{"module":"Lib"}}
+# Edit the loaded file and reload it: its interface moves, and exactly
+# that module goes stale.
+!edit identity A = A ==> identity A = A\n\nis-basis-here : Set → Set\nis-basis-here A = A
+{"method":"reload"}
+{"method":"findNames","params":{"pattern":"is-basis","module":"Lib"}}
+# The refresh re-renders that one module and keeps the other three.
+{"method":"buildIndex","params":{"module":"Lib"}}
+{"method":"findNames","params":{"pattern":"is-basis","module":"Lib"}}
+# force rebuilds the whole index, which is why it reports no count of
+# what it refreshed: it refreshed everything.
+{"method":"buildIndex","params":{"module":"Lib","force":true}}
+# A module the index has and the project no longer does: its entries are
+# still answered from, and the report says one module has been removed,
+# until the next build drops it.
+!rm Lib/Param.agda
+{"method":"findNames","params":{"pattern":"basis-of","module":"Lib"}}
+{"method":"buildIndex","params":{"module":"Lib"}}
+{"method":"findNames","params":{"pattern":"basis-of","module":"Lib"}}
+{"method":"close"}

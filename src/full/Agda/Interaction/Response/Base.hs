@@ -35,6 +35,7 @@ import Agda.Syntax.Common         (InteractionId(..), Arg)
 import Agda.Syntax.Common.Pretty  (DocTree)
 import Agda.Syntax.Concrete       (Expr)
 import Agda.Syntax.Concrete.Name  (Name, QName, NameInScope)
+import Agda.Syntax.Position       (Range)
 import Agda.Syntax.Scope.Base     (WhyInScopeData)
 import qualified Agda.Syntax.Internal as I
 import Agda.TypeChecking.Monad.Base.Types
@@ -58,8 +59,9 @@ data Response_boot tcErr tcWarning warningsAndNonFatalErrors
     | Resp_JumpToError FilePath Word32
     | Resp_InteractionPoints [InteractionId]
     | Resp_GiveAction InteractionId GiveResult
-    | Resp_MakeCase InteractionId MakeCaseVariant [String]
-      -- ^ Response is list of printed clauses.
+    | Resp_MakeCase InteractionId MakeCaseVariant Range [String]
+      -- ^ Response is the source range of the clause that was split
+      --   and the list of printed clauses that replace it.
     | Resp_SolveAll [(InteractionId, Expr)]
       -- ^ Solution for one or more meta-variables.
     | Resp_Mimer InteractionId (Maybe String)

@@ -1,0 +1,106 @@
+>>> 1 load
+error:
+  code: "timeout"
+  data:
+    checking: "Profile.spin"
+    profile: "most expensive: Profile.spin"
+  message:
+    timed out while checking Profile.spin, after N ms of CPU time on it; the command was aborted and the session is usable
+! edited
+>>> 2 load
+result:
+  checked: true
+  errors: []
+  file: "Profile.agda"
+  goals:
+    - id: 0
+      range: Profile.agda 46:8@987-46:12@991
+      type: "loop zero ≡ zero"
+  hiddenGoals: []
+  profile: "most expensive: Profile.slow"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    1 goal
+    ?0 : loop zero ≡ zero
+    
+    Profile (CPU time; rows elided)
+  warnings: []
+>>> 3 reload
+result:
+  checked: true
+  errors: []
+  file: "Profile.agda"
+  goals:
+    - id: 0
+      range: Profile.agda 46:8@987-46:12@991
+      type: "loop zero ≡ zero"
+  hiddenGoals: []
+  profile: "most expensive: Profile.slow"
+  reloaded: false
+  resynced: false
+  revision: 3
+  text:
+    1 goal
+    ?0 : loop zero ≡ zero
+    
+    Profile (CPU time; rows elided)
+  warnings: []
+>>> 4 reload
+result:
+  checked: true
+  errors: []
+  file: "Profile.agda"
+  goals:
+    - id: 0
+      range: Profile.agda 46:8@987-46:12@991
+      type: "loop zero ≡ zero"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 4
+  text:
+    1 goal
+    ?0 : loop zero ≡ zero
+  warnings: []
+! edited
+>>> 5 reload
+result:
+  checked: true
+  errors: []
+  file: "Profile.agda"
+  goals:
+    - id: 0
+      range: Profile.agda 47:8@1025-47:12@1029
+      type: "loop zero ≡ zero"
+  hiddenGoals: []
+  profile: "most expensive: Profile.slow"
+  reloaded: false
+  resynced: false
+  revision: 5
+  text:
+    1 goal
+    ?0 : loop zero ≡ zero
+    
+    Profile (CPU time; rows elided)
+  warnings: []
+>>> 6 load
+error:
+  agdaCode: "OptionError"
+  code: "agdaError"
+  message:
+    error: [OptionError]
+    Not a valid profiling option: 'definitely'. Valid options are
+    constraints, conversion, definitions, instances, interactive,
+    internal, metas, modules, sections, serialize, sharing, or all.
+>>> 7 close
+result:
+  checked: false
+  closed: true
+  file: "Profile.agda"
+  reloaded: false
+  resynced: false
+  revision: 6
+  text:
+    session closed

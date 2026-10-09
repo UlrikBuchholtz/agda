@@ -1,0 +1,31 @@
+# The ways a mutating method declines to mutate.  None of them may
+# write to the file.
+{"method":"load","params":{"file":"%FILE%"}}
+# An expression the goal rejects is an Agda error.
+{"method":"give","params":{"goal":0,"expr":"zero"}}
+# A goal that does not exist is reported together with the ones that do.
+{"method":"give","params":{"goal":9,"expr":"refl"}}
+# Nothing has been solved by unification yet.
+{"method":"solve","params":{}}
+# Proof search cannot inhabit the empty type.
+{"method":"auto","params":{"goal":0}}
+# Two constructors fit, so introduction cannot choose between them.
+{"method":"intro","params":{"goal":1}}
+# Asking proof search to list candidates is a result, not a mutation.
+{"method":"auto","params":{"goal":2,"args":"-l"}}
+# A revision that does not match is refused before anything is written.
+{"method":"give","params":{"goal":1,"expr":"zero"},"expectRevision":99}
+!unchanged
+# The matching revision goes through, and takes the session to the next one.
+{"method":"give","params":{"goal":1,"expr":"zero"},"expectRevision":1}
+!source
+# So the revision it started from is refused now.
+{"method":"give","params":{"goal":0,"expr":"refl"},"expectRevision":1}
+# Editing the file behind Agda's back makes the next mutation resync
+# first; a goal the resync removed is an error, not a silent no-op.
+!edit same n = {!!} ==> same n = refl
+{"method":"intro","params":{"goal":2}}
+# ... while a goal that survived is mutated against the new revision.
+{"method":"auto","params":{"goal":1}}
+!source
+{"method":"close"}

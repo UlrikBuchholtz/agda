@@ -1,0 +1,4 @@
+ret > ExitFailure 71
+out > Error: Cannot mix --name-index-status with backend HTML
+out > Run 'agda --help' for help on command line options.
+out >

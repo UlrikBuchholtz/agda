@@ -1,0 +1,254 @@
+>>> 1 load
+result:
+  checked: true
+  errors: []
+  file: "NameIndex.agda"
+  goals:
+    - id: 0
+      range: NameIndex.agda 15:24@417-15:28@421
+      type: "Set"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    1 goal
+    ?0 : Set
+  warnings: []
+>>> 2 findNames
+result:
+  checked: true
+  file: "NameIndex.agda"
+  glob: false
+  hits: []
+  index:
+    builtAt: null
+    definitions: 0
+    formatVersion: 3
+    indexed: 0
+    location: null
+    modified: 0
+    modifiedModules: []
+    modules: 1
+    reason: "this project has no .agda-lib, so there is no build directory to hold an index"
+    removed: 0
+    scope: "NameIndex"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "NameIndex"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 0
+  module: "NameIndex"
+  pattern: "is-basis"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    findNames: no hits for "is-basis"
+    index:     unavailable (this project has no .agda-lib)
+    modules:   1 under NameIndex, 0 indexed, 0 stale, 1 unindexed, 0 unindexable
+  type: []
+>>> 3 findNames
+result:
+  checked: true
+  file: "NameIndex.agda"
+  glob: false
+  hits: []
+  index:
+    builtAt: null
+    definitions: 0
+    formatVersion: 3
+    indexed: 0
+    location: null
+    modified: 0
+    modifiedModules: []
+    modules: 0
+    reason: "this project has no .agda-lib, so there is no build directory to hold an index"
+    removed: 0
+    scope: "NoSuchModule"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 0
+    unindexedModules: []
+  kinds: []
+  limit: 50
+  matched: 0
+  module: "NoSuchModule"
+  pattern: "is"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    findNames: no hits for "is"
+    index:     unavailable (this project has no .agda-lib)
+    modules:   0 under NoSuchModule, 0 indexed, 0 stale, 0 unindexed, 0 unindexable
+  type: []
+! edited
+>>> 4 reload
+result:
+  checked: true
+  errors: []
+  file: "NameIndex.agda"
+  goals: []
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    0 goals
+  warnings: []
+>>> 5 findNames
+result:
+  checked: true
+  file: "NameIndex.agda"
+  glob: false
+  hits: []
+  index:
+    builtAt: null
+    definitions: 0
+    formatVersion: 3
+    indexed: 0
+    location: null
+    modified: 0
+    modifiedModules: []
+    modules: 1
+    reason: "this project has no .agda-lib, so there is no build directory to hold an index"
+    removed: 0
+    scope: "NameIndex"
+    stale: 1
+    staleModules:
+      - "NameIndex"
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 0
+    unindexedModules: []
+  kinds: []
+  limit: 50
+  matched: 0
+  module: "NameIndex"
+  pattern: "is-basis"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    findNames: no hits for "is-basis"
+    index:     unavailable (this project has no .agda-lib)
+    modules:   1 under NameIndex, 0 indexed, 1 stale, 0 unindexed, 0 unindexable
+  type: []
+>>> 6 findNames
+result:
+  checked: true
+  file: "NameIndex.agda"
+  glob: false
+  hits: []
+  index:
+    builtAt: null
+    definitions: 0
+    formatVersion: 3
+    indexed: 0
+    location: null
+    modified: 0
+    modifiedModules: []
+    modules: 1
+    reason: "this project has no .agda-lib, so there is no build directory to hold an index"
+    removed: 0
+    scope: "NameIndex"
+    stale: 1
+    staleModules:
+      - "NameIndex"
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 0
+    unindexedModules: []
+  kinds:
+    - "FunName"
+  limit: 5
+  matched: 0
+  module: "NameIndex"
+  pattern: "basis"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    findNames: no hits for "basis"
+    index:     unavailable (this project has no .agda-lib)
+    modules:   1 under NameIndex, 0 indexed, 1 stale, 0 unindexed, 0 unindexable
+  type:
+    - "Bool"
+>>> 7 findNames
+result:
+  checked: true
+  file: "NameIndex.agda"
+  glob: true
+  hits: []
+  index:
+    builtAt: null
+    definitions: 0
+    formatVersion: 3
+    indexed: 0
+    location: null
+    modified: 0
+    modifiedModules: []
+    modules: 1
+    reason: "this project has no .agda-lib, so there is no build directory to hold an index"
+    removed: 0
+    scope: "NameIndex"
+    stale: 1
+    staleModules:
+      - "NameIndex"
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 0
+    unindexedModules: []
+  kinds: []
+  limit: 50
+  matched: 0
+  module: "NameIndex"
+  pattern: "is-*-for"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    findNames: no hits for "is-*-for"
+    index:     unavailable (this project has no .agda-lib)
+    modules:   1 under NameIndex, 0 indexed, 1 stale, 0 unindexed, 0 unindexable
+  type: []
+>>> 8 findNames
+error:
+  code: "invalidParams"
+  message:
+    pattern must not be empty
+>>> 9 findNames
+error:
+  code: "invalidParams"
+  message:
+    limit must be positive
+>>> 10 findNames
+error:
+  code: "invalidParams"
+  message:
+    Error in $: key "pattern" not found
+>>> 11 buildIndex
+error:
+  code: "notApplicable"
+  message:
+    this project has no .agda-lib file, so there is no build directory to hold an index
+! file unchanged
+>>> 12 close
+result:
+  checked: true
+  closed: true
+  file: "NameIndex.agda"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    session closed

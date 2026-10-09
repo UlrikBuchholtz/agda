@@ -1,0 +1,83 @@
+>>> 1 load
+result:
+  checked: true
+  errors: []
+  file: "Timeout.agda"
+  goals:
+    - id: 0
+      range: Timeout.agda 14:8@206-14:12@210
+      type: "ℕ"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    1 goal
+    ?0 : ℕ
+  warnings: []
+>>> 2 normalise
+error:
+  code: "timeout"
+  message:
+    timed out; the command was aborted and the session is usable
+>>> 3 goal
+result:
+  boundary: []
+  checked: true
+  constraints: []
+  context: []
+  file: "Timeout.agda"
+  goal:
+    id: 0
+    range: Timeout.agda 14:8@206-14:12@210
+  reloaded: true
+  resynced: false
+  revision: 2
+  text:
+    Goal: ℕ
+  type: "ℕ"
+>>> 4 normalise
+result:
+  checked: true
+  file: "Timeout.agda"
+  mode: "default"
+  reloaded: false
+  result: "suc zero"
+  resynced: false
+  revision: 2
+  scope: "topLevel"
+  text:
+    suc zero
+>>> 5 abort
+result:
+  aborted: false
+  checked: true
+  file: "Timeout.agda"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    nothing was running
+>>> 6 normalise
+result:
+  checked: true
+  file: "Timeout.agda"
+  mode: "default"
+  reloaded: false
+  result: "suc zero"
+  resynced: false
+  revision: 2
+  scope: "topLevel"
+  text:
+    suc zero
+! file unchanged
+>>> 7 close
+result:
+  checked: true
+  closed: true
+  file: "Timeout.agda"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    session closed

@@ -1,0 +1,10 @@
+# Errors and warnings carry Agda's own name for them, a range, and the
+# calls they were raised under; context entries carry their modality.
+{"method":"load","params":{"file":"%FILE%"}}
+{"method":"context","params":{"goal":0}}
+# A rejected candidate reports the same structure as a failed request.
+{"method":"check","params":{"goal":0,"expr":"true"}}
+# So does a request that fails outright.
+{"method":"give","params":{"goal":0,"expr":"true"}}
+!unchanged
+{"method":"close"}

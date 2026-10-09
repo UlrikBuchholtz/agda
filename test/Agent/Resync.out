@@ -1,0 +1,117 @@
+>>> 1 load
+result:
+  checked: true
+  errors: []
+  file: "Resync.agda"
+  goals:
+    - id: 0
+      range: Resync.agda 9:8@139-9:12@143
+      type: "Bool"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    1 goal
+    ?0 : Bool
+  warnings: []
+! edited
+>>> 2 goals
+result:
+  checked: true
+  errors: []
+  file: "Resync.agda"
+  goals:
+    - id: 0
+      range: Resync.agda 12:9@168-12:13@172
+      type: "Bool"
+  hiddenGoals: []
+  reloaded: true
+  resynced: true
+  revision: 2
+  text:
+    1 goal
+    ?0 : Bool
+  warnings: []
+>>> 3 goal
+result:
+  boundary: []
+  checked: true
+  constraints: []
+  context:
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "unrestricted"
+        relevance: "relevant"
+      name: "b"
+      originalName: "b"
+      type: "Bool"
+      value: null
+  file: "Resync.agda"
+  goal:
+    id: 0
+    range: Resync.agda 12:9@168-12:13@172
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    Goal: Bool
+    ———— Context ———————————————————————————————————————————————
+    b : Bool
+  type: "Bool"
+! edited
+>>> 4 goals
+error:
+  code: "staleDocument"
+  data:
+    changedOnDisk: true
+    revision: 2
+  message:
+    the document is at revision 2 and has changed on disk since it was loaded
+>>> 5 goals
+result:
+  checked: true
+  errors: []
+  file: "Resync.agda"
+  goals:
+    - id: 0
+      range: Resync.agda 12:9@168-12:16@175
+      type: "Bool"
+  hiddenGoals: []
+  reloaded: true
+  resynced: true
+  revision: 3
+  text:
+    1 goal
+    ?0 : Bool
+  warnings: []
+>>> 6 goals
+result:
+  checked: true
+  errors: []
+  file: "Resync.agda"
+  goals:
+    - id: 0
+      range: Resync.agda 12:9@168-12:16@175
+      type: "Bool"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 3
+  text:
+    1 goal
+    ?0 : Bool
+  warnings: []
+! file unchanged
+>>> 7 close
+result:
+  checked: true
+  closed: true
+  file: "Resync.agda"
+  reloaded: false
+  resynced: false
+  revision: 3
+  text:
+    session closed

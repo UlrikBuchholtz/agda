@@ -13,6 +13,7 @@ module Agda.Interaction.FindFile
   , findFile, findFile', findFile'_, findFile''
   , findInterfaceFile', findInterfaceFile
   , checkModuleName
+  , enumerateAgdaFiles
   , rootNameModule
   , replaceModuleExtension
   , dropAgdaExtension, hasAgdaExtension, stripAgdaExtension
@@ -24,10 +25,15 @@ import Control.Monad
 import Control.Monad.Except
 import Control.Monad.State
 import Control.Monad.Trans
+import Data.IORef
+import Data.List (isPrefixOf, sort)
 import Data.Maybe (catMaybes, fromMaybe, isJust)
 import qualified Data.Map as Map
+import qualified Data.Set as Set
 import qualified Data.Text as T
+import System.Directory (canonicalizePath, doesDirectoryExist, listDirectory)
 import System.FilePath
+import System.IO.Error (catchIOError)
 
 import Agda.Interaction.Library ( findProjectRoot )
 
@@ -265,6 +271,49 @@ hasAgdaExtension = isJust . stripAgdaExtension
 dropAgdaExtension :: FilePath -> FilePath
 dropAgdaExtension = fromMaybe __IMPOSSIBLE__ . stripAgdaExtension
 
+
+-- | All Agda source files under the given directories, each paired with
+--   the top-level module name its path spells.
+--
+--   The path-to-module-name mapping is the one 'checkModuleName'
+--   enforces -- the path relative to the include directory, with the
+--   separators turned into name components -- so nothing has to be
+--   parsed.  A file that lies under several of the directories is
+--   listed once, under the first one, which is where 'findFile'' would
+--   look for it too.
+--
+--   Directories that cannot be read are skipped, and so are @_build@
+--   and dot directories.  Each directory is visited at most once, under
+--   its canonical path, so a symbolic link back up the tree does not
+--   send the walk round in circles.
+enumerateAgdaFiles :: [AbsolutePath] -> IO [(AbsolutePath, List1 String)]
+enumerateAgdaFiles dirs = do
+    seen <- newIORef Set.empty
+    nubOn (filePath . fst) . concat <$> mapM (\ d -> walk seen d []) dirs
+  where
+  walk seen dir prefix = do
+    canonical <- canonicalizePath (filePath dir) `orElse` filePath dir
+    fresh <- atomicModifyIORef' seen \ visited ->
+      (Set.insert canonical visited, not $ Set.member canonical visited)
+    if not fresh then return [] else do
+      names <- listDirectory (filePath dir) `orElse` []
+      concat <$> mapM (entry seen dir prefix) (sort names)
+
+  entry seen dir prefix name
+    | "." `isPrefixOf` name = return []
+    | name == "_build"      = return []
+    | otherwise             = do
+        let path = filePath dir </> name
+        isDir <- doesDirectoryExist path `orElse` False
+        if isDir then walk seen (mkAbsolute path) (prefix ++ [name]) else
+          case stripAgdaExtension name of
+            Just base | base /= "" ->
+              return [ (mkAbsolute path
+                       , List1.fromListSafe __IMPOSSIBLE__ (prefix ++ [base])) ]
+            _ -> return []
+
+  orElse :: IO a -> a -> IO a
+  orElse m a = m `catchIOError` \ _ -> return a
 
 rootNameModule :: AbsolutePath -> String
 rootNameModule = dropAgdaExtension . snd . splitFileName . filePath

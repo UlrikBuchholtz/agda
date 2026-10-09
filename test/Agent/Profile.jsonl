@@ -1,0 +1,16 @@
+# A load that runs out of time says which definition it was checking,
+# and carries the timings up to then (the transcript keeps the most
+# expensive account of a profile, and masks its times).
+{"method":"load","params":{"file":"%FILE%"},"timeoutMs":3000}
+!edit spin = refl ==> spin = {!!}
+# With `profile`, the result lists the time billed to each definition.
+{"method":"load","params":{"file":"%FILE%","profile":"definitions"}}
+{"method":"reload","params":{"profile":true}}
+# The profiling options were for one load only.
+{"method":"reload"}
+# A profiling option the file sets gets its table without asking.
+!edit module Profile where ==> {-# OPTIONS --profile=definitions #-}\nmodule Profile where
+{"method":"reload"}
+# A profiling option Agda does not know is Agda's error.
+{"method":"load","params":{"file":"%FILE%","profile":"definitely"}}
+{"method":"close"}

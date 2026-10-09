@@ -1,0 +1,26 @@
+# Case splitting every shape of clause.  The goals are split from the
+# last to the first, so that the renumbering after each split leaves
+# the identifiers of the goals still to come alone.
+{"method":"load","params":{"file":"%FILE%"}}
+# No variables: split on the result, which here means copatterns.
+{"method":"case","params":{"goal":6}}
+# A with-clause.
+{"method":"case","params":{"goal":5,"vars":"x"}}
+# A clause of a λ where: the new clauses stay on lines of their own.
+{"method":"case","params":{"goal":4,"vars":"x"}}
+# A clause of an inline λ { … }: the new clauses are separated by ;,
+# and the clause beside it is left alone.
+{"method":"case","params":{"goal":3,"vars":"x"}}
+# A clause spread over two lines.
+{"method":"case","params":{"goal":2,"vars":"m"}}
+# A clause with a where block, which must survive.
+{"method":"case","params":{"goal":1,"vars":"m"}}
+# A plain function clause.
+{"method":"case","params":{"goal":0,"vars":"x"}}
+!source
+# A variable that is not bound is an Agda error, and writes nothing.
+{"method":"case","params":{"goal":0,"vars":"nope"}}
+# Neither does a result split with nothing to split on.
+{"method":"case","params":{"goal":0}}
+!unchanged
+{"method":"close"}

@@ -1,0 +1,123 @@
+>>> 1 load
+error:
+  agdaCode: "UnequalTypes"
+  code: "agdaError"
+  message:
+    FailedLoad.agda:13.9-12: error: [UnequalTypes]
+    The type
+      Bool → Bool
+    is not a subtype of
+      Bool
+    when checking that the expression not has type Bool
+  range: FailedLoad.agda 13:9@240-13:12@243
+  related:
+    - message:
+        when checking that the expression not has type Bool
+      range: FailedLoad.agda 13:9@240-13:12@243
+    - message:
+        when checking that the clause wrong = not has type Bool
+      range: FailedLoad.agda 13:1@232-13:12@243
+    - message:
+        when checking the definition of wrong
+      range: FailedLoad.agda 13:1@232-13:12@243
+>>> 2 goals
+error:
+  agdaCode: "UnequalTypes"
+  code: "agdaError"
+  data:
+    revision: 1
+    unchangedSinceLoad: true
+  message:
+    FailedLoad.agda:13.9-12: error: [UnequalTypes]
+    The type
+      Bool → Bool
+    is not a subtype of
+      Bool
+    when checking that the expression not has type Bool
+  range: FailedLoad.agda 13:9@240-13:12@243
+  related:
+    - message:
+        when checking that the expression not has type Bool
+      range: FailedLoad.agda 13:9@240-13:12@243
+    - message:
+        when checking that the clause wrong = not has type Bool
+      range: FailedLoad.agda 13:1@232-13:12@243
+    - message:
+        when checking the definition of wrong
+      range: FailedLoad.agda 13:1@232-13:12@243
+>>> 3 goal
+error:
+  agdaCode: "UnequalTypes"
+  code: "agdaError"
+  data:
+    revision: 1
+    unchangedSinceLoad: true
+  message:
+    FailedLoad.agda:13.9-12: error: [UnequalTypes]
+    The type
+      Bool → Bool
+    is not a subtype of
+      Bool
+    when checking that the expression not has type Bool
+  range: FailedLoad.agda 13:9@240-13:12@243
+  related:
+    - message:
+        when checking that the expression not has type Bool
+      range: FailedLoad.agda 13:9@240-13:12@243
+    - message:
+        when checking that the clause wrong = not has type Bool
+      range: FailedLoad.agda 13:1@232-13:12@243
+    - message:
+        when checking the definition of wrong
+      range: FailedLoad.agda 13:1@232-13:12@243
+>>> 4 reload
+error:
+  agdaCode: "UnequalTypes"
+  code: "agdaError"
+  message:
+    FailedLoad.agda:13.9-12: error: [UnequalTypes]
+    The type
+      Bool → Bool
+    is not a subtype of
+      Bool
+    when checking that the expression not has type Bool
+  range: FailedLoad.agda 13:9@240-13:12@243
+  related:
+    - message:
+        when checking that the expression not has type Bool
+      range: FailedLoad.agda 13:9@240-13:12@243
+    - message:
+        when checking that the clause wrong = not has type Bool
+      range: FailedLoad.agda 13:1@232-13:12@243
+    - message:
+        when checking the definition of wrong
+      range: FailedLoad.agda 13:1@232-13:12@243
+! edited
+>>> 5 goals
+result:
+  checked: true
+  errors: []
+  file: "FailedLoad.agda"
+  goals:
+    - id: 0
+      range: FailedLoad.agda 10:9@213-10:13@217
+      type: "Bool"
+  hiddenGoals: []
+  reloaded: true
+  resynced: true
+  revision: 3
+  text:
+    1 goal
+    ?0 : Bool
+  warnings: []
+! file unchanged
+>>> 6 close
+result:
+  checked: true
+  closed: true
+  file: "FailedLoad.agda"
+  reloaded: false
+  resynced: false
+  revision: 3
+  text:
+    session closed

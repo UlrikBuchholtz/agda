@@ -1,0 +1,783 @@
+! file Lib/Main.agda
+>>> 1 findNames
+result:
+  checked: false
+  file: null
+  glob: false
+  hits: []
+  index:
+    builtAt: null
+    definitions: 0
+    formatVersion: 3
+    indexed: 0
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    reason: "no index has been built for this project"
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 5
+    unindexedModules:
+      - module: "Lib.Basis"
+        reason: "noInterface"
+      - module: "Lib.Broken"
+        reason: "noInterface"
+      - module: "Lib.Main"
+        reason: "noInterface"
+      - module: "Lib.Param"
+        reason: "noInterface"
+      - module: "Lib.Reexport"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 0
+  module: "Lib"
+  pattern: "is-basis"
+  reloaded: false
+  resynced: false
+  revision: 0
+  text:
+    findNames: no hits for "is-basis"
+    index:     not built yet; run `agda-client index` (the buildIndex method)
+    modules:   5 under Lib, 0 indexed, 0 stale, 5 unindexed, 0 unindexable
+  type: []
+>>> 2 load
+result:
+  checked: true
+  errors: []
+  file: "Lib/Main.agda"
+  goals: []
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    0 goals
+  warnings: []
+>>> 3 findNames
+result:
+  checked: true
+  file: "Lib/Main.agda"
+  glob: false
+  hits: []
+  index:
+    builtAt: null
+    definitions: 0
+    formatVersion: 3
+    indexed: 0
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    reason: "no index has been built for this project"
+    removed: 0
+    scope: "Lib"
+    stale: 1
+    staleModules:
+      - "Lib.Main"
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 4
+    unindexedModules:
+      - module: "Lib.Basis"
+        reason: "noInterface"
+      - module: "Lib.Broken"
+        reason: "noInterface"
+      - module: "Lib.Param"
+        reason: "noInterface"
+      - module: "Lib.Reexport"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 0
+  module: "Lib"
+  pattern: "is-basis"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    findNames: no hits for "is-basis"
+    index:     not built yet; run `agda-client index` (the buildIndex method)
+    modules:   5 under Lib, 0 indexed, 1 stale, 4 unindexed, 0 unindexable
+  type: []
+>>> 4 buildIndex
+result:
+  built: true
+  checked: true
+  exitCode: 0
+  file: "Lib/Main.agda"
+  forced: false
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 9
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 4
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  module: "Lib"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    buildIndex: built
+    index:     built <time>
+    modules:   5 under Lib, 4 indexed, 0 stale, 1 unindexed, 0 unindexable
+>>> 5 findNames
+result:
+  checked: true
+  file: "Lib/Main.agda"
+  glob: false
+  hits:
+    - column: 1
+      file: "Lib/Basis.agda"
+      kind: "FunName"
+      line: 9
+      match: "exact"
+      module: "Lib.Basis"
+      name: "is-basis"
+      rank: 1
+      type: "Set → Set"
+      uses: 0
+    - column: 1
+      file: "Lib/Basis.agda"
+      kind: "FunName"
+      line: 12
+      match: "prefix"
+      module: "Lib.Basis"
+      name: "is-basis-for"
+      rank: 2
+      type: "Set → Set → Set"
+      uses: 0
+    - column: 3
+      file: "Lib/Basis.agda"
+      kind: "FunName"
+      line: 17
+      match: "prefix"
+      module: "Lib.Basis"
+      name: "is-basis-sub"
+      qualifier: "Sub"
+      rank: 2
+      type: "Set → Set"
+      uses: 0
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 9
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 4
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 3
+  module: "Lib"
+  pattern: "is-basis"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    findNames: 3 hits for "is-basis"
+      Lib.Basis.is-basis : Set → Set
+        FunName, exact, 0 uses -- Lib/Basis.agda:9,1
+      Lib.Basis.is-basis-for : Set → Set → Set
+        FunName, prefix, 0 uses -- Lib/Basis.agda:12,1
+      Lib.Basis.Sub.is-basis-sub : Set → Set
+        FunName, prefix, 0 uses -- Lib/Basis.agda:17,3
+    index:     built <time>
+    modules:   5 under Lib, 4 indexed, 0 stale, 1 unindexed, 0 unindexable
+  type: []
+>>> 6 findNames
+result:
+  checked: true
+  file: "Lib/Main.agda"
+  glob: false
+  hits:
+    - column: 6
+      file: "Lib/Basis.agda"
+      kind: "DataName"
+      line: 6
+      match: "exact"
+      module: "Lib.Basis"
+      name: "Bool"
+      rank: 1
+      type: "Set"
+      uses: 3
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 9
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 4
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  kinds:
+    - "DataName"
+  limit: 50
+  matched: 1
+  module: "Lib"
+  pattern: "Bool"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    findNames: 1 hit for "Bool"
+      Lib.Basis.Bool : Set
+        DataName, exact, 3 uses -- Lib/Basis.agda:6,6
+    index:     built <time>
+    modules:   5 under Lib, 4 indexed, 0 stale, 1 unindexed, 0 unindexable
+  type: []
+>>> 7 findNames
+result:
+  checked: true
+  file: "Lib/Main.agda"
+  glob: false
+  hits:
+    - column: 1
+      file: "Lib/Param.agda"
+      kind: "FunName"
+      line: 8
+      match: "exact"
+      module: "Lib.Param"
+      name: "basis-of"
+      params: "(A : Set) (B : Set)"
+      rank: 1
+      type: "Set"
+      uses: 0
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 9
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 4
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 1
+  module: "Lib"
+  pattern: "basis-of"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    findNames: 1 hit for "basis-of"
+      Lib.Param.basis-of : Set
+        FunName, exact, 0 uses -- Lib/Param.agda:8,1
+        params (A : Set) (B : Set)
+    index:     built <time>
+    modules:   5 under Lib, 4 indexed, 0 stale, 1 unindexed, 0 unindexable
+  type: []
+>>> 8 buildIndex
+result:
+  built: false
+  checked: true
+  file: "Lib/Main.agda"
+  forced: false
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 9
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 4
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  module: "Lib"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    buildIndex: the index is up to date; pass force to rebuild it
+    index:     built <time>
+    modules:   5 under Lib, 4 indexed, 0 stale, 1 unindexed, 0 unindexable
+! edited
+>>> 9 reload
+result:
+  checked: true
+  errors: []
+  file: "Lib/Main.agda"
+  goals: []
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    0 goals
+  warnings: []
+>>> 10 findNames
+result:
+  checked: true
+  file: "Lib/Main.agda"
+  glob: false
+  hits:
+    - column: 1
+      file: "Lib/Basis.agda"
+      kind: "FunName"
+      line: 9
+      match: "exact"
+      module: "Lib.Basis"
+      name: "is-basis"
+      rank: 1
+      type: "Set → Set"
+      uses: 0
+    - column: 1
+      file: "Lib/Basis.agda"
+      kind: "FunName"
+      line: 12
+      match: "prefix"
+      module: "Lib.Basis"
+      name: "is-basis-for"
+      rank: 2
+      type: "Set → Set → Set"
+      uses: 0
+    - column: 3
+      file: "Lib/Basis.agda"
+      kind: "FunName"
+      line: 17
+      match: "prefix"
+      module: "Lib.Basis"
+      name: "is-basis-sub"
+      qualifier: "Sub"
+      rank: 2
+      type: "Set → Set"
+      uses: 0
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 9
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 3
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    removed: 0
+    scope: "Lib"
+    stale: 1
+    staleModules:
+      - "Lib.Main"
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 3
+  module: "Lib"
+  pattern: "is-basis"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    findNames: 3 hits for "is-basis"
+      Lib.Basis.is-basis : Set → Set
+        FunName, exact, 0 uses -- Lib/Basis.agda:9,1
+      Lib.Basis.is-basis-for : Set → Set → Set
+        FunName, prefix, 0 uses -- Lib/Basis.agda:12,1
+      Lib.Basis.Sub.is-basis-sub : Set → Set
+        FunName, prefix, 0 uses -- Lib/Basis.agda:17,3
+    index:     built <time>
+    modules:   5 under Lib, 3 indexed, 1 stale, 1 unindexed, 0 unindexable
+    refresh:   1 module to re-index; run `agda-client index` (the buildIndex method)
+  type: []
+>>> 11 buildIndex
+result:
+  built: true
+  checked: true
+  exitCode: 0
+  file: "Lib/Main.agda"
+  forced: false
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 10
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 4
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  module: "Lib"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    buildIndex: built
+    index:     built <time>
+    modules:   5 under Lib, 4 indexed, 0 stale, 1 unindexed, 0 unindexable
+>>> 12 findNames
+result:
+  checked: true
+  file: "Lib/Main.agda"
+  glob: false
+  hits:
+    - column: 1
+      file: "Lib/Basis.agda"
+      kind: "FunName"
+      line: 9
+      match: "exact"
+      module: "Lib.Basis"
+      name: "is-basis"
+      rank: 1
+      type: "Set → Set"
+      uses: 0
+    - column: 1
+      file: "Lib/Basis.agda"
+      kind: "FunName"
+      line: 12
+      match: "prefix"
+      module: "Lib.Basis"
+      name: "is-basis-for"
+      rank: 2
+      type: "Set → Set → Set"
+      uses: 0
+    - column: 3
+      file: "Lib/Basis.agda"
+      kind: "FunName"
+      line: 17
+      match: "prefix"
+      module: "Lib.Basis"
+      name: "is-basis-sub"
+      qualifier: "Sub"
+      rank: 2
+      type: "Set → Set"
+      uses: 0
+    - column: 1
+      file: "Lib/Main.agda"
+      kind: "FunName"
+      line: 10
+      match: "prefix"
+      module: "Lib.Main"
+      name: "is-basis-here"
+      rank: 2
+      type: "Set → Set"
+      uses: 0
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 10
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 4
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 4
+  module: "Lib"
+  pattern: "is-basis"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    findNames: 4 hits for "is-basis"
+      Lib.Basis.is-basis : Set → Set
+        FunName, exact, 0 uses -- Lib/Basis.agda:9,1
+      Lib.Basis.is-basis-for : Set → Set → Set
+        FunName, prefix, 0 uses -- Lib/Basis.agda:12,1
+      Lib.Basis.Sub.is-basis-sub : Set → Set
+        FunName, prefix, 0 uses -- Lib/Basis.agda:17,3
+      Lib.Main.is-basis-here : Set → Set
+        FunName, prefix, 0 uses -- Lib/Main.agda:10,1
+    index:     built <time>
+    modules:   5 under Lib, 4 indexed, 0 stale, 1 unindexed, 0 unindexable
+  type: []
+>>> 13 buildIndex
+result:
+  built: true
+  checked: true
+  exitCode: 0
+  file: "Lib/Main.agda"
+  forced: true
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 10
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 4
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 5
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  module: "Lib"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    buildIndex: built
+    index:     built <time>
+    modules:   5 under Lib, 4 indexed, 0 stale, 1 unindexed, 0 unindexable
+! removed Lib/Param.agda
+>>> 14 findNames
+result:
+  checked: true
+  file: "Lib/Main.agda"
+  glob: false
+  hits:
+    - column: 1
+      file: "Lib/Param.agda"
+      kind: "FunName"
+      line: 8
+      match: "exact"
+      module: "Lib.Param"
+      name: "basis-of"
+      params: "(A : Set) (B : Set)"
+      rank: 1
+      type: "Set"
+      uses: 0
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 10
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 3
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 4
+    removed: 1
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 1
+  module: "Lib"
+  pattern: "basis-of"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    findNames: 1 hit for "basis-of"
+      Lib.Param.basis-of : Set
+        FunName, exact, 0 uses -- Lib/Param.agda:8,1
+        params (A : Set) (B : Set)
+    index:     built <time>
+    modules:   4 under Lib, 3 indexed, 0 stale, 1 unindexed, 0 unindexable
+    removed:   1
+    refresh:   1 module to re-index; run `agda-client index` (the buildIndex method)
+  type: []
+>>> 15 buildIndex
+result:
+  built: true
+  checked: true
+  exitCode: 0
+  file: "Lib/Main.agda"
+  forced: false
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 9
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 3
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 4
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  module: "Lib"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    buildIndex: built
+    index:     built <time>
+    modules:   4 under Lib, 3 indexed, 0 stale, 1 unindexed, 0 unindexable
+>>> 16 findNames
+result:
+  checked: true
+  file: "Lib/Main.agda"
+  glob: false
+  hits: []
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 9
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 3
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 4
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 1
+    unindexedModules:
+      - module: "Lib.Broken"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 0
+  module: "Lib"
+  pattern: "basis-of"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    findNames: no hits for "basis-of"
+    index:     built <time>
+    modules:   4 under Lib, 3 indexed, 0 stale, 1 unindexed, 0 unindexable
+  type: []
+>>> 17 close
+result:
+  checked: true
+  closed: true
+  file: "Lib/Main.agda"
+  reloaded: false
+  resynced: false
+  revision: 2
+  text:
+    session closed

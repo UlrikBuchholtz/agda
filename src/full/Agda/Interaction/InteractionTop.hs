@@ -774,7 +774,7 @@ interpret (Cmd_why_in_scope ii _range s) = do
 
 interpret (Cmd_make_case ii rng s) = do
   rng <- syncInteractionRange ii rng
-  (f, casectxt, cs) <- lift $ makeCase ii rng s
+  (f, casectxt, clauseRange, cs) <- lift $ makeCase ii rng s
   liftCommandMT (withInteractionId ii) $ do
     tel <- lift $ lookupSection (qnameModule f) -- don't shadow the names in this telescope
     unicode <- getsTC $ optUseUnicode . getPragmaOptions
@@ -794,7 +794,7 @@ interpret (Cmd_make_case ii rng s) = do
         [ "cs   = " TCP.<+> TCP.text (show cs)
         ]
       ]
-    putResponse $ Resp_MakeCase ii (makeCaseVariant casectxt) pcs'
+    putResponse $ Resp_MakeCase ii (makeCaseVariant casectxt) clauseRange pcs'
 
 interpret (Cmd_compute_toplevel cmode s) = do
   (time, expr) <- parseAndDoAtToplevel (B.computeInCurrent cmode) (B.computeWrapInput cmode s)

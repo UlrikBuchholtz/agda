@@ -73,6 +73,56 @@ but in the fixed order listed in the following:
      found in the ``include`` directories of the library or
      in subdirectories thereof.
 
+.. option:: --build-name-index[={refresh|full}]
+
+     .. versionadded:: 2.9.0
+
+     Expects an ``.agda-lib`` file in the current directory
+     (or in a parent directory) and writes a *name index* of every
+     module the project could write an ``import`` for: its own include
+     directories plus the transitive ``depend:`` closure of the library.
+
+     The index records, per public definition, its name, its kind, the
+     module it is defined in, the line and column of its definition, its
+     type rendered twice — with implicit arguments hidden and shown —
+     the names its type mentions, and how many indexed definitions
+     mention it.  It is written to ``_build/<version>/agda/``, beside
+     the interface files it is derived from.
+
+     A module whose interface is current is read from that interface;
+     every other module is type-checked, including one that has never
+     been checked or imported before.  Indexing a dependency nothing has
+     checked yet, such as a freshly installed library, therefore costs
+     type-checking all of it, and writes its interfaces into that
+     library's own build directory.  A module that will not
+     load — one that binds a builtin the project has already bound, say
+     — is reported and left out of the index.
+
+     With an index already there, the default mode ``refresh`` re-renders
+     only the modules whose interfaces have moved since it was built and
+     keeps the rest of it, which after an ordinary edit is a second or
+     two rather than the minute a first build of a large library costs.
+     ``full`` re-renders everything.  An index written by another Agda,
+     or under another include path, is rebuilt in full whatever the mode.
+
+     The index is what :ref:`the agent interface's <agent-interface>`
+     ``findNames`` method answers from.  See :ref:`the-name-index` for
+     its file format.
+
+.. option:: --name-index-status
+
+     .. versionadded:: 2.9.0
+
+     Print, as one line of JSON, where the current project's name index
+     is and what it covers — how many modules an index would have to
+     cover, how many of them it covers, how many have gone stale since
+     it was built, how many have never been checked here, and how many
+     have been edited since they were checked — and exit.
+
+     Nothing at query time needs a type checker, so a client can read
+     the index file itself; this is how it finds the file, without
+     re-deriving the build-directory layout.  See :ref:`the-name-index`.
+
 .. option:: --print-agda-app-dir
 
      .. versionadded:: 2.6.4.1
@@ -164,6 +214,14 @@ General options
      For use with other editors such as Atom (no need to invoke
      yourself).
 
+.. option:: --interaction-agent
+
+     .. versionadded:: 2.9.0
+
+     For use with programmatic clients, such as the ``agda-client``
+     command line tool that ships with Agda.  See
+     :ref:`agent-interface`.
+
 .. option:: --interaction-exit-on-error
 
      .. versionadded:: 2.6.3
@@ -244,10 +302,10 @@ General options
      code points that are not supported by the current locale or code
      page by something else, perhaps question marks.
 
-     This option is not supported when :option:`--interaction` or
-     :option:`--interaction-json` are used, because when those options
-     are used Agda uses UTF-8 when writing to stdout (and when reading
-     from stdin).
+     This option is not supported when :option:`--interaction`,
+     :option:`--interaction-json` or :option:`--interaction-agent` are
+     used, because when those options are used Agda uses UTF-8 when
+     writing to stdout (and when reading from stdin).
 
 .. _literate-options:
 

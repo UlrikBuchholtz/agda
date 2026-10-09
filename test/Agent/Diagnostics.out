@@ -1,0 +1,156 @@
+>>> 1 load
+result:
+  checked: true
+  errors: []
+  file: "Diagnostics.agda"
+  goals:
+    - id: 0
+      range: Diagnostics.agda 24:13@584-24:17@588
+      type: "ℕ"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    1 goal, 1 warning
+    ?0 : ℕ
+    Diagnostics.agda:19.1-23: warning: -W[no]UnreachableClauses
+    Unreachable clause
+    when checking the definition of constTrue
+  warnings:
+    - code: "UnreachableClauses"
+      message:
+        Diagnostics.agda:19.1-23: warning: -W[no]UnreachableClauses
+        Unreachable clause
+        when checking the definition of constTrue
+      range: Diagnostics.agda 19:1@418-19:23@440
+      severity: "warning"
+>>> 2 context
+result:
+  checked: true
+  context:
+    - inScope: false
+      modality:
+        cohesion: "continuous"
+        hiding: "hidden"
+        quantity: "unrestricted"
+        relevance: "relevant"
+      name: "A"
+      originalName: "A"
+      type: "Set"
+      value: null
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "erased"
+        relevance: "relevant"
+      name: "n"
+      originalName: "n"
+      type: "ℕ"
+      value: null
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "unrestricted"
+        relevance: "irrelevant"
+      name: "b"
+      originalName: "b"
+      type: "Bool"
+      value: null
+  file: "Diagnostics.agda"
+  goal:
+    id: 0
+    range: Diagnostics.agda 24:13@584-24:17@588
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    A : Set   (not in scope)
+    n : ℕ   (erased)
+    b : Bool   (irrelevant)
+>>> 3 check
+result:
+  accepted: false
+  checked: true
+  error:
+    code: "UnequalTypes"
+    message:
+      Diagnostics.agda:24.13-17: error: [UnequalTypes]
+      The type
+        Bool
+      is not a subtype of
+        ℕ
+      when checking that the expression true has type ℕ
+    range: Diagnostics.agda 24:13@584-24:17@588
+    related:
+      - message:
+          when checking that the expression true has type ℕ
+        range: Diagnostics.agda 24:13@584-24:17@588
+      - message:
+          when checking that the expression ? has type ℕ
+        range: Diagnostics.agda 24:13@584-24:17@588
+      - message:
+          when checking that the clause modal n b = ? has type
+          {A : Set} → @0 ℕ → .Bool → ℕ
+        range: Diagnostics.agda 24:1@572-24:17@588
+      - message:
+          when checking the definition of modal
+        range: Diagnostics.agda 24:1@572-24:17@588
+    severity: "error"
+  file: "Diagnostics.agda"
+  goal:
+    id: 0
+    range: Diagnostics.agda 24:13@584-24:17@588
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    rejected
+    Diagnostics.agda:24.13-17: error: [UnequalTypes]
+    The type
+      Bool
+    is not a subtype of
+      ℕ
+    when checking that the expression true has type ℕ
+>>> 4 give
+error:
+  agdaCode: "UnequalTypes"
+  code: "agdaError"
+  message:
+    Diagnostics.agda:24.13-17: error: [UnequalTypes]
+    The type
+      Bool
+    is not a subtype of
+      ℕ
+    when checking that the expression true has type ℕ
+  range: Diagnostics.agda 24:13@584-24:17@588
+  related:
+    - message:
+        when checking that the expression true has type ℕ
+      range: Diagnostics.agda 24:13@584-24:17@588
+    - message:
+        when checking that the expression true has type ℕ
+      range: Diagnostics.agda 24:13@584-24:17@588
+    - message:
+        when checking that the expression ? has type ℕ
+      range: Diagnostics.agda 24:13@584-24:17@588
+    - message:
+        when checking that the clause modal n b = ? has type
+        {A : Set} → @0 ℕ → .Bool → ℕ
+      range: Diagnostics.agda 24:1@572-24:17@588
+    - message:
+        when checking the definition of modal
+      range: Diagnostics.agda 24:1@572-24:17@588
+! file unchanged
+>>> 5 close
+result:
+  checked: true
+  closed: true
+  file: "Diagnostics.agda"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    session closed

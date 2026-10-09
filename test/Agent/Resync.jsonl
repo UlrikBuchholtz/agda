@@ -1,0 +1,14 @@
+# The file on disk is the source of truth: a query after an edit made
+# with other tools reloads it and says so.
+{"method":"load","params":{"file":"%FILE%"}}
+!edit id b = {!!} ==> id b = b\n\nneg : Bool → Bool\nneg b = {!!}
+{"method":"goals"}
+{"method":"goal","params":{"goal":0}}
+# Strict clients can opt out of resynchronisation instead.
+!edit neg b = {!!} ==> neg b = {! b !}
+{"method":"goals","expectRevision":2}
+# ... and the session is unharmed by the refusal.
+{"method":"goals"}
+{"method":"goals","expectRevision":3}
+!unchanged
+{"method":"close"}

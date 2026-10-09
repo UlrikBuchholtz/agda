@@ -1,0 +1,34 @@
+# The query methods that do not run a proof step: batch candidate
+# checking, helper types, search, module contents, why-in-scope,
+# definition sites, and the per-request display options.
+{"method":"load","params":{"file":"%FILE%"}}
+# Several candidates against one goal, in one request.  The goal
+# survives all of them, accepted or not.
+{"method":"checkCandidates","params":{"goal":0,"exprs":["refl","zero","n"]}}
+{"method":"goal","params":{"goal":0}}
+{"method":"checkCandidates","params":{"goal":0,"exprs":[]}}
+# The type a helper function would need.
+{"method":"helperType","params":{"goal":0,"expr":"helper n"}}
+# Search takes space separated identifiers, not a type.
+{"method":"search","params":{"names":"_≡_"}}
+{"method":"search","params":{"names":"  "}}
+# Module contents, at the top level and in the scope of a goal.
+{"method":"moduleContents","params":{"module":"Nested"}}
+{"method":"moduleContents","params":{"goal":0,"module":"Nested"}}
+# Why a name is in scope, and what it can mean.
+{"method":"whyInScope","params":{"name":"double"}}
+{"method":"whyInScope","params":{"goal":0,"name":"_+_"}}
+{"method":"whyInScope","params":{"name":"nowhere"}}
+# Where the name at a position is defined.
+{"method":"definitionAt","params":{"position":{"line":27,"col":19}}}
+{"method":"definitionAt","params":{"position":"28:1"}}
+{"method":"definitionAt","params":{"position":{"line":15,"col":13}}}
+# A position that carries no name at all.
+{"method":"definitionAt","params":{"position":{"line":26,"col":1}}}
+{"method":"definitionAt","params":{"position":{"line":99,"col":1}}}
+# Display options hold for one request only.
+{"method":"goal","params":{"goal":0},"showImplicit":true}
+{"method":"goal","params":{"goal":0}}
+# Nothing above may have written to the file.
+!unchanged
+{"method":"close"}

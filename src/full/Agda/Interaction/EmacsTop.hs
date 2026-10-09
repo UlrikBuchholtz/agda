@@ -9,6 +9,10 @@ module Agda.Interaction.EmacsTop
     , explainWhyInScope
     , prettyResponseContext
     , prettyTypeOfMeta
+    , prettyGoalType
+    , prettyNamedType
+    , prettyModuleContents
+    , prettySearchAbout
     , prettyNormalForm
     , prettyInferredType
     ) where
@@ -37,6 +41,7 @@ import Agda.TypeChecking.Monad
 import Agda.Interaction.AgdaTop
 import Agda.Interaction.Base
 import Agda.Interaction.BasicOps as B
+import Agda.Interaction.Output (OutputForm)
 import Agda.Interaction.Response as R
 import Agda.Interaction.Emacs.Lisp
 import Agda.Interaction.EmacsCommand ( displayInfo, clearRunningInfo, displayRunningInfo, displayVerboseInfo)
@@ -130,7 +135,7 @@ lispifyResponse = \case
           Give_Paren      -> "'paren"
           Give_NoParen    -> "'no-paren"
 
-  Resp_MakeCase ii variant pcs ->
+  Resp_MakeCase ii variant _range pcs ->
     return $ lastTag 2 $ L
       [ A cmd
       , Q $ L $ map (A . quote) pcs
@@ -209,24 +214,12 @@ lispifyDisplayInfo = \case
       format "*Inferred Type*" doc
 
     Info_ModuleContents modules tel types -> do
-      doc <- localTCState $ do
-        typeDocs <- addContext tel $ forM types $ \ (x, t) -> do
-          doc <- prettyTCM t
-          return (prettyShow x, ":" <+> doc)
-        return $ vcat
-          [ "Modules"
-          , nest 2 $ vcat $ map pretty modules
-          , "Names"
-          , nest 2 $ align 10 typeDocs
-          ]
+      doc <- localTCState $ prettyModuleContents modules <$>
+               addContext tel (mapM prettyNamedType types)
       format "*Module contents*" doc
 
     Info_SearchAbout hits names -> do
-      hitDocs <- forM hits $ \ (x, t) -> do
-        doc <- prettyTCM t
-        return (prettyShow x, ":" <+> doc)
-      let doc = "Definitions about" <+>
-                text (List.intercalate ", " $ words names) $$ nest 2 (align 10 hitDocs)
+      doc <- prettySearchAbout names <$> mapM prettyNamedType hits
       format "*Search About*" doc
 
     Info_WhyInScope why -> do
@@ -272,38 +265,8 @@ lispifyGoalSpecificDisplayInfo ii kind = localTCState $ withInteractionId ii $
       doc <- showComputed cmode expr
       format "*Normal Form*" doc
 
-    Goal_GoalType norm aux ctx bndry constraints -> do
-      ctxDoc <- prettyResponseContext ii True ctx
-      goalDoc <- prettyTypeOfMeta norm ii
-      let boundaryDoc hd bndry
-            | null bndry = []
-            | otherwise  = [ text $ delimiter hd
-                           , vcat $ map pretty bndry
-                           ]
-      auxDoc <- case aux of
-            GoalOnly -> return empty
-            GoalAndHave expr bndry -> do
-              doc <- prettyATop expr
-              return $ ("Have:" <+> doc) $$ vcat (boundaryDoc ("Boundary (actual)") bndry)
-            GoalAndElaboration expr -> do
-              doc <- prettyATop expr
-              return $ "Elaborates to:" <+> doc
-      let constraintsDoc
-            | null constraints = []
-            | otherwise        =
-              [ TCP.text $ delimiter "Constraints"
-              , TCP.vcat $ map prettyTCM constraints
-              ]
-      doc <- TCP.vcat $ concat
-        [ [ "Goal:" TCP.<+> return goalDoc
-          , return (vcat (boundaryDoc "Boundary (wanted)" bndry))
-          , return auxDoc
-          ]
-        , [ TCP.text (delimiter "Context") | not $ null ctxDoc ]
-        , [ return ctxDoc ]
-        , constraintsDoc
-        ]
-      format "*Goal type etc.*" doc
+    Goal_GoalType norm aux ctx bndry constraints ->
+      format "*Goal type etc.*" =<< prettyGoalType ii norm aux ctx bndry constraints
 
     Goal_CurrentGoal norm -> do
       doc <- prettyTypeOfMeta norm ii
@@ -459,6 +422,86 @@ prettyTypeOfMeta norm ii = do
   B.typeOfMeta norm ii >>= \case
     OfType _ e -> prettyATop e
     form       -> prettyATop form
+
+-- | Pretty-prints the goal type, boundary, context and constraints of a
+--   goal, as displayed by @C-c C-,@ and friends.
+--
+--   Precondition: run inside @'withInteractionId' ii@ (and, if the
+--   caller cares about the ambient state, inside 'localTCState').
+--   Shared with the agent frontend ("Agda.Interaction.Agent.Top") so
+--   that both render goals identically.
+
+prettyGoalType
+  :: InteractionId          -- ^ The goal.
+  -> Rewrite                -- ^ How normalised is the displayed type?
+  -> GoalTypeAux            -- ^ @Have:@ or @Elaborates to:@, if any.
+  -> [ResponseContextEntry] -- ^ The context.
+  -> [IPFace' C.Expr]       -- ^ The wanted boundary.
+  -> [OutputForm C.Expr C.Expr] -- ^ Constraints mentioning the goal.
+  -> TCM Doc
+prettyGoalType ii norm aux ctx bndry constraints = do
+  ctxDoc  <- prettyResponseContext ii True ctx
+  goalDoc <- prettyTypeOfMeta norm ii
+  let boundaryDoc hd bs
+        | null bs   = []
+        | otherwise = [ text $ delimiter hd, vcat $ map pretty bs ]
+  auxDoc <- case aux of
+    GoalOnly -> return empty
+    GoalAndHave expr bs -> do
+      doc <- prettyATop expr
+      return $ ("Have:" <+> doc) $$ vcat (boundaryDoc "Boundary (actual)" bs)
+    GoalAndElaboration expr -> do
+      doc <- prettyATop expr
+      return $ "Elaborates to:" <+> doc
+  let constraintsDoc
+        | null constraints = []
+        | otherwise        =
+          [ TCP.text $ delimiter "Constraints"
+          , TCP.vcat $ map prettyTCM constraints
+          ]
+  TCP.vcat $ concat
+    [ [ "Goal:" TCP.<+> return goalDoc
+      , return (vcat (boundaryDoc "Boundary (wanted)" bndry))
+      , return auxDoc
+      ]
+    , [ TCP.text (delimiter "Context") | not $ null ctxDoc ]
+    , [ return ctxDoc ]
+    , constraintsDoc
+    ]
+
+-- | A name and its type, ready for 'prettyNamedTypes'.
+--
+--   The caller is responsible for the context the type is printed in
+--   (module contents are printed under the module's telescope).
+
+prettyNamedType :: TCP.PrettyTCM a => (C.Name, a) -> TCM (String, Doc)
+prettyNamedType (x, t) = (prettyShow x,) <$> prettyTCM t
+
+-- | An aligned list of names and their types.
+
+prettyNamedTypes :: [(String, Doc)] -> Doc
+prettyNamedTypes entries = align 10 [ (x, ":" <+> d) | (x, d) <- entries ]
+
+-- | The contents of a module: its submodules, and the names it exports
+--   with their types.  Shared with the agent frontend
+--   ("Agda.Interaction.Agent.Top") so that both render it alike.
+
+prettyModuleContents :: [C.Name] -> [(String, Doc)] -> Doc
+prettyModuleContents modules entries = vcat
+  [ "Modules"
+  , nest 2 $ vcat $ map pretty modules
+  , "Names"
+  , nest 2 $ prettyNamedTypes entries
+  ]
+
+-- | The result of a search: the identifiers searched for, and the
+--   names whose type mentions all of them.  Shared with the agent
+--   frontend.
+
+prettySearchAbout :: String -> [(String, Doc)] -> Doc
+prettySearchAbout names entries =
+  ("Definitions about" <+> text (List.intercalate ", " $ words names))
+    $$ nest 2 (prettyNamedTypes entries)
 
 -- | Pretty-print the result of a compute command in the command state
 --   captured when the command completed.  Shared with the JSON frontend

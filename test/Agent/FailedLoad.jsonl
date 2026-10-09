@@ -1,0 +1,17 @@
+# A load that fails leaves no current file, so every query after it would
+# check the file again and fail the same way -- a full re-check per
+# question.  While the file on disk is still the one that failed, a query
+# is answered with that load's error from memory instead, and the error's
+# data says so.
+{"method":"load","params":{"file":"%FILE%"}}
+{"method":"goals"}
+{"method":"goal","params":{"goal":0}}
+# An explicit reload checks again regardless.
+{"method":"reload"}
+# The first edit clears the memory: the query reloads, and the goals are
+# back.
+!edit wrong = not ==> wrong = not true
+{"method":"goals"}
+# Only the edit above may have touched the file.
+!unchanged
+{"method":"close"}

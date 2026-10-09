@@ -1,0 +1,23 @@
+# Driving a file to a complete proof through the mutating methods.
+# Every one of them rewrites the file and reloads it, so the goals are
+# renumbered after each step.
+{"method":"load","params":{"file":"%FILE%"}}
+# Proof search closes the base case.
+{"method":"auto","params":{"goal":0}}
+# The step case goes into an argument position, so it is parenthesised.
+{"method":"give","params":{"goal":0,"expr":"+-idʳ n"}}
+!source
+# Refining leaves one goal per argument of the constructor.
+{"method":"refine","params":{"goal":0,"expr":"_,_"}}
+{"method":"give","params":{"goal":0,"expr":"zero"}}
+{"method":"give","params":{"goal":0,"expr":"suc zero"}}
+# Introduction, and then the body of the lambda it wrote.
+{"method":"intro","params":{"goal":0}}
+{"method":"give","params":{"goal":0,"expr":"x"}}
+# A multi-line expression is indented to the column of the hole.
+{"method":"give","params":{"goal":0,"expr":"suc (suc\n(suc (suc zero)))"}}
+# What the type checker has already worked out.
+{"method":"solve","params":{}}
+{"method":"goals"}
+!source
+{"method":"close"}

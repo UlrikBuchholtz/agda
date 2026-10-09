@@ -11,6 +11,7 @@ import qualified Internal.Compiler.MAlonzo.Encode
 import qualified Internal.Interaction.Highlighting.Precise
 import qualified Internal.Interaction.Highlighting.Range
 import qualified Internal.Interaction.Library
+import qualified Internal.Interaction.NameIndex
 import qualified Internal.Interaction.Options
 import qualified Internal.Syntax.Common
 import qualified Internal.Syntax.Internal
@@ -64,6 +65,7 @@ tests = testGroup "Internal" $
   Internal.Interaction.Highlighting.Precise.tests :
   Internal.Interaction.Highlighting.Range.tests :
   Internal.Interaction.Library.tests :
+  Internal.Interaction.NameIndex.tests :
   Internal.Interaction.Options.tests :
   Internal.Syntax.Common.tests :
   Internal.Syntax.Internal.tests :

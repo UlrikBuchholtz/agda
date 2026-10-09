@@ -1,0 +1,402 @@
+>>> 1 handshake
+result:
+  checked: false
+  file: null
+  handshake:
+    agdaVersion: "<version>"
+    capabilities:
+      autoResync: true
+      cachedFailure: true
+      caseSplit: true
+      definitionAt: true
+      displayOptions: true
+      mutations: true
+      nameIndex: true
+      profiling: true
+      structuredDiagnostics: true
+      timeouts: true
+    computeModes:
+      - "default"
+      - "head"
+      - "ignoreAbstract"
+      - "show"
+    defaults:
+      auto: "asIs"
+      check: "simplified"
+      checkCandidates: "simplified"
+      constraints: "asIs"
+      context: "simplified"
+      elaborate: "normalised"
+      goal: "simplified"
+      goals: "asIs"
+      helperType: "simplified"
+      infer: "simplified"
+      moduleContents: "simplified"
+      normalise: "default"
+      search: "simplified"
+      solve: "instantiated"
+    methods:
+      - "handshake"
+      - "status"
+      - "load"
+      - "reload"
+      - "goals"
+      - "goal"
+      - "context"
+      - "check"
+      - "checkCandidates"
+      - "infer"
+      - "normalise"
+      - "constraints"
+      - "helperType"
+      - "search"
+      - "findNames"
+      - "buildIndex"
+      - "moduleContents"
+      - "whyInScope"
+      - "definitionAt"
+      - "give"
+      - "elaborate"
+      - "refine"
+      - "intro"
+      - "case"
+      - "solve"
+      - "auto"
+      - "abort"
+      - "close"
+    normalisationModes:
+      - "asIs"
+      - "instantiated"
+      - "headNormal"
+      - "simplified"
+      - "normalised"
+    notes:
+      buildIndex: "The `buildIndex` method builds the index `findNames` answers from, in a process of its own, and relays its output as progress events.  The first build costs tens of seconds on a large library, which is why no query spends it unasked; give it a generous `timeoutMs`.  Afterwards it re-renders only the modules whose interfaces have moved, so keeping the index current after an edit costs a second or two, and calling it whenever `stale` is nonzero is the intended use.  With nothing stale it does nothing unless `force` is set, which re-renders the whole index.  `module` scopes the report that comes back, not the build."
+      displayOptions: "`showImplicit` and `showIrrelevant` hold for one request only.  They change what Agda prints, so on a mutating method they change the text that is written to the file as well."
+      findNames: "The `findNames` method searches names, not types, and it searches every module the project could import rather than the scope of the loaded file; `search` is the complementary query.  It answers from an index built beside the interface files, so its `hits` are empty until `buildIndex` has made one.  Hits are ranked: 1 the whole name, 2 a prefix of it, 3 a whole hyphen- or underscore-separated component, 4 a substring of it, and -- only when `type` is given -- 5 a name the type mentions; ties break on `uses`, then on where the hit lives, the project's own modules before its libraries' and Agda's builtins last.  The `index` object every answer carries says what the answer covered: `builtAt` is null when there is no index, `stale` counts checked modules the index does not match, `unindexed` counts modules that have never been checked here and so are not in it until a build checks them, and `modified` counts modules that have been edited since they were checked -- the index describes those as they were checked, and no build changes that until Agda checks them again."
+      mutations: "A mutating method rewrites the file on disk and reloads it, so the goal identifiers in its result are the ones of the new revision.  Its `edits` field lists the replacements that were made."
+      profiling: "`load` and `reload` take `profile`: a profiling option such as \"definitions\" (or `true` for that one), or a list of them.  The file is then checked from source even if its interface is current, and the result's `profile` lists the CPU time billed to each definition, most expensive first.  A request that times out while checking a definition names it in `data.checking`, and `data.profile` holds the timings up to then."
+      search: "The `search` method searches types, not names: it takes space separated identifiers and lists the names in scope whose type mentions all of them.  A name that merely contains one of the identifiers is not a hit, and a module the loaded file does not import is not searched.  To look for a name by its spelling, or to look outside what the file imports, use `findNames`."
+      topLevelScope: "Top-level infer/normalise print names qualified w.r.t. the top-level scope."
+    positionEncoding:
+      columnBase: 1
+      lineBase: 1
+      offsetBase: 0
+      rangeConvention: "half-open"
+      unit: "codePoint"
+    protocolVersion: 2
+  reloaded: false
+  resynced: false
+  revision: 0
+>>> 2 load
+result:
+  checked: true
+  errors: []
+  file: "Basics.agda"
+  goals:
+    - id: 0
+      range: Basics.agda 25:17@493-25:21@497
+      type: "suc n + zero ≡ suc n"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    1 goal
+    ?0 : suc n + zero ≡ suc n
+  warnings: []
+>>> 3 goals
+result:
+  checked: true
+  errors: []
+  file: "Basics.agda"
+  goals:
+    - id: 0
+      range: Basics.agda 25:17@493-25:21@497
+      type: "suc n + zero ≡ suc n"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    1 goal
+    ?0 : suc n + zero ≡ suc n
+  warnings: []
+>>> 4 goal
+result:
+  boundary: []
+  checked: true
+  constraints: []
+  context:
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "unrestricted"
+        relevance: "relevant"
+      name: "n"
+      originalName: "n"
+      type: "ℕ"
+      value: null
+  file: "Basics.agda"
+  goal:
+    id: 0
+    range: Basics.agda 25:17@493-25:21@497
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    Goal: suc (n + zero) ≡ suc n
+    ———— Context ———————————————————————————————————————————————
+    n : ℕ
+  type: "suc (n + zero) ≡ suc n"
+>>> 5 context
+result:
+  checked: true
+  context:
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "unrestricted"
+        relevance: "relevant"
+      name: "n"
+      originalName: "n"
+      type: "ℕ"
+      value: null
+  file: "Basics.agda"
+  goal:
+    id: 0
+    range: Basics.agda 25:17@493-25:21@497
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    n : ℕ
+>>> 6 goal
+result:
+  boundary: []
+  checked: true
+  constraints: []
+  context:
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "unrestricted"
+        relevance: "relevant"
+      name: "n"
+      originalName: "n"
+      type: "ℕ"
+      value: null
+  file: "Basics.agda"
+  goal:
+    id: 0
+    range: Basics.agda 25:17@493-25:21@497
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    Goal: suc (n + zero) ≡ suc n
+    ———— Context ———————————————————————————————————————————————
+    n : ℕ
+  type: "suc (n + zero) ≡ suc n"
+>>> 7 check
+result:
+  accepted: true
+  boundary: []
+  checked: true
+  constraints: []
+  context:
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "unrestricted"
+        relevance: "relevant"
+      name: "n"
+      originalName: "n"
+      type: "ℕ"
+      value: null
+  elaborated: "cong suc (+-idʳ n)"
+  file: "Basics.agda"
+  goal:
+    id: 0
+    range: Basics.agda 25:17@493-25:21@497
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    accepted
+    Goal: suc (n + zero) ≡ suc n
+    Elaborates to: cong suc (+-idʳ n)
+    ———— Context ———————————————————————————————————————————————
+    n : ℕ
+  type: "suc (n + zero) ≡ suc n"
+>>> 8 check
+result:
+  accepted: false
+  checked: true
+  error:
+    code: "UnequalTerms"
+    message:
+      Basics.agda:25.17-21: error: [UnequalTerms]
+      The terms
+        n + zero
+      and
+        n
+      are not equal at type ℕ
+      when checking that the expression refl has type
+      suc n + zero ≡ suc n
+    range: Basics.agda 25:17@493-25:21@497
+    related:
+      - message:
+          when checking that the expression refl has type
+          suc n + zero ≡ suc n
+        range: Basics.agda 25:17@493-25:21@497
+      - message:
+          when checking that the expression ? has type suc n + zero ≡ suc n
+        range: Basics.agda 25:17@493-25:21@497
+      - message:
+          when checking that the clause +-idʳ (suc n) = ? has type
+          (n : ℕ) → n + zero ≡ n
+        range: Basics.agda 25:1@477-25:21@497
+      - message:
+          when checking the definition of +-idʳ
+        range: Basics.agda 24:1@456-25:21@497
+    severity: "error"
+  file: "Basics.agda"
+  goal:
+    id: 0
+    range: Basics.agda 25:17@493-25:21@497
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    rejected
+    Basics.agda:25.17-21: error: [UnequalTerms]
+    The terms
+      n + zero
+    and
+      n
+    are not equal at type ℕ
+    when checking that the expression refl has type
+    suc n + zero ≡ suc n
+>>> 9 goal
+result:
+  boundary: []
+  checked: true
+  constraints: []
+  context:
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "unrestricted"
+        relevance: "relevant"
+      name: "n"
+      originalName: "n"
+      type: "ℕ"
+      value: null
+  file: "Basics.agda"
+  goal:
+    id: 0
+    range: Basics.agda 25:17@493-25:21@497
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    Goal: suc (n + zero) ≡ suc n
+    ———— Context ———————————————————————————————————————————————
+    n : ℕ
+  type: "suc (n + zero) ≡ suc n"
+>>> 10 infer
+result:
+  checked: true
+  file: "Basics.agda"
+  goal:
+    id: 0
+    range: Basics.agda 25:17@493-25:21@497
+  reloaded: false
+  resynced: false
+  revision: 1
+  scope: "goal"
+  text:
+    n + zero ≡ n
+  type: "n + zero ≡ n"
+>>> 11 infer
+result:
+  checked: true
+  file: "Basics.agda"
+  reloaded: false
+  resynced: false
+  revision: 1
+  scope: "topLevel"
+  text:
+    ℕ
+  type: "ℕ"
+>>> 12 normalise
+result:
+  checked: true
+  file: "Basics.agda"
+  goal:
+    id: 0
+    range: Basics.agda 25:17@493-25:21@497
+  mode: "default"
+  reloaded: false
+  result: "suc (n + zero)"
+  resynced: false
+  revision: 1
+  scope: "goal"
+  text:
+    suc (n + zero)
+>>> 13 normalise
+result:
+  checked: true
+  file: "Basics.agda"
+  mode: "default"
+  reloaded: false
+  result: "suc (suc zero)"
+  resynced: false
+  revision: 1
+  scope: "topLevel"
+  text:
+    suc (suc zero)
+>>> 14 constraints
+result:
+  checked: true
+  constraints: []
+  file: "Basics.agda"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    no constraints
+>>> 15 status
+result:
+  agdaVersion: "<version>"
+  checked: true
+  file: "Basics.agda"
+  goals:
+    - id: 0
+      range: Basics.agda 25:17@493-25:21@497
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    agda:     <version>
+    file:     Basics.agda
+    revision: 1
+    checked:  True
+    goals:    ?0
+! file unchanged
+>>> 16 close
+result:
+  checked: true
+  closed: true
+  file: "Basics.agda"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    session closed

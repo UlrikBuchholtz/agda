@@ -1,0 +1,643 @@
+>>> 1 load
+result:
+  checked: true
+  errors: []
+  file: "CaseSplit.agda"
+  goals:
+    - id: 0
+      range: CaseSplit.agda 23:9@528-23:14@533
+      type: "Bool"
+    - id: 1
+      range: CaseSplit.agda 27:12@630-27:17@635
+      type: "ℕ"
+    - id: 2
+      range: CaseSplit.agda 35:11@746-35:16@751
+      type: "ℕ"
+    - id: 3
+      range: CaseSplit.agda 39:33@872-39:38@877
+      type: "Bool"
+    - id: 4
+      range: CaseSplit.agda 44:7@985-44:12@990
+      type: "Bool"
+    - id: 5
+      range: CaseSplit.agda 49:11@1054-49:16@1059
+      type: "Bool"
+    - id: 6
+      range: CaseSplit.agda 53:8@1144-53:12@1148
+      type: "Pair Bool Bool"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    7 goals
+    ?0 : Bool
+    ?1 : ℕ
+    ?2 : ℕ
+    ?3 : Bool
+    ?4 : Bool
+    ?5 : Bool
+    ?6 : Pair Bool Bool
+  warnings: []
+>>> 2 case
+result:
+  applied: true
+  checked: true
+  clauses:
+    - "pair .Pair.fst = ?"
+    - "pair .Pair.snd = ?"
+  edits:
+    - newText: "pair .Pair.fst = ?\npair .Pair.snd = ?"
+      oldText: "pair = {!!}"
+      range: CaseSplit.agda 53:1@1137-53:12@1148
+  errors: []
+  file: "CaseSplit.agda"
+  goal:
+    id: 6
+    range: CaseSplit.agda 53:8@1144-53:12@1148
+  goals:
+    - id: 0
+      range: CaseSplit.agda 23:9@528-23:14@533
+      type: "Bool"
+    - id: 1
+      range: CaseSplit.agda 27:12@630-27:17@635
+      type: "ℕ"
+    - id: 2
+      range: CaseSplit.agda 35:11@746-35:16@751
+      type: "ℕ"
+    - id: 3
+      range: CaseSplit.agda 39:33@872-39:38@877
+      type: "Bool"
+    - id: 4
+      range: CaseSplit.agda 44:7@985-44:12@990
+      type: "Bool"
+    - id: 5
+      range: CaseSplit.agda 49:11@1054-49:16@1059
+      type: "Bool"
+    - id: 6
+      range: CaseSplit.agda 53:18@1154-53:19@1155
+      type: "Bool"
+    - id: 7
+      range: CaseSplit.agda 54:18@1173-54:19@1174
+      type: "Bool"
+  hiddenGoals: []
+  previousRevision: 1
+  reloaded: true
+  resynced: false
+  revision: 2
+  text:
+    case ?6:
+      pair .Pair.fst = ?
+      pair .Pair.snd = ?
+    8 goals
+    ?0 : Bool
+    ?1 : ℕ
+    ?2 : ℕ
+    ?3 : Bool
+    ?4 : Bool
+    ?5 : Bool
+    ?6 : Bool
+    ?7 : Bool
+  variant: "function"
+  warnings: []
+>>> 3 case
+result:
+  applied: true
+  checked: true
+  clauses:
+    - "... | zero = ?"
+    - "... | suc x = ?"
+  edits:
+    - newText: "... | zero = ?\n... | suc x = ?"
+      oldText: "... | x = {!x!}"
+      range: CaseSplit.agda 49:1@1044-49:16@1059
+  errors: []
+  file: "CaseSplit.agda"
+  goal:
+    id: 5
+    range: CaseSplit.agda 49:11@1054-49:16@1059
+  goals:
+    - id: 0
+      range: CaseSplit.agda 23:9@528-23:14@533
+      type: "Bool"
+    - id: 1
+      range: CaseSplit.agda 27:12@630-27:17@635
+      type: "ℕ"
+    - id: 2
+      range: CaseSplit.agda 35:11@746-35:16@751
+      type: "ℕ"
+    - id: 3
+      range: CaseSplit.agda 39:33@872-39:38@877
+      type: "Bool"
+    - id: 4
+      range: CaseSplit.agda 44:7@985-44:12@990
+      type: "Bool"
+    - id: 5
+      range: CaseSplit.agda 49:14@1057-49:15@1058
+      type: "Bool"
+    - id: 6
+      range: CaseSplit.agda 50:15@1073-50:16@1074
+      type: "Bool"
+    - id: 7
+      range: CaseSplit.agda 54:18@1169-54:19@1170
+      type: "Bool"
+    - id: 8
+      range: CaseSplit.agda 55:18@1188-55:19@1189
+      type: "Bool"
+  hiddenGoals: []
+  previousRevision: 2
+  reloaded: true
+  resynced: false
+  revision: 3
+  text:
+    case ?5:
+      ... | zero = ?
+      ... | suc x = ?
+    9 goals
+    ?0 : Bool
+    ?1 : ℕ
+    ?2 : ℕ
+    ?3 : Bool
+    ?4 : Bool
+    ?5 : Bool
+    ?6 : Bool
+    ?7 : Bool
+    ?8 : Bool
+  variant: "function"
+  warnings: []
+>>> 4 case
+result:
+  applied: true
+  checked: true
+  clauses:
+    - "true → ?"
+    - "false → ?"
+  edits:
+    - newText: "true → ?\n  false → ?"
+      oldText: "x → {!x!}"
+      range: CaseSplit.agda 44:3@981-44:12@990
+  errors: []
+  file: "CaseSplit.agda"
+  goal:
+    id: 4
+    range: CaseSplit.agda 44:7@985-44:12@990
+  goals:
+    - id: 0
+      range: CaseSplit.agda 23:9@528-23:14@533
+      type: "Bool"
+    - id: 1
+      range: CaseSplit.agda 27:12@630-27:17@635
+      type: "ℕ"
+    - id: 2
+      range: CaseSplit.agda 35:11@746-35:16@751
+      type: "ℕ"
+    - id: 3
+      range: CaseSplit.agda 39:33@872-39:38@877
+      type: "Bool"
+    - id: 4
+      range: CaseSplit.agda 44:10@988-44:11@989
+      type: "Bool"
+    - id: 5
+      range: CaseSplit.agda 45:11@1000-45:12@1001
+      type: "Bool"
+    - id: 6
+      range: CaseSplit.agda 50:14@1068-50:15@1069
+      type: "Bool"
+    - id: 7
+      range: CaseSplit.agda 51:15@1084-51:16@1085
+      type: "Bool"
+    - id: 8
+      range: CaseSplit.agda 55:18@1180-55:19@1181
+      type: "Bool"
+    - id: 9
+      range: CaseSplit.agda 56:18@1199-56:19@1200
+      type: "Bool"
+  hiddenGoals: []
+  previousRevision: 3
+  reloaded: true
+  resynced: false
+  revision: 4
+  text:
+    case ?4:
+      true → ?
+      false → ?
+    10 goals
+    ?0 : Bool
+    ?1 : ℕ
+    ?2 : ℕ
+    ?3 : Bool
+    ?4 : Bool
+    ?5 : Bool
+    ?6 : Bool
+    ?7 : Bool
+    ?8 : Bool
+    ?9 : Bool
+  variant: "extendedLambda"
+  warnings: []
+>>> 5 case
+result:
+  applied: true
+  checked: true
+  clauses:
+    - "false → ?"
+  edits:
+    - newText: "false → ?"
+      oldText: "x → {!x!}"
+      range: CaseSplit.agda 39:29@868-39:38@877
+  errors: []
+  file: "CaseSplit.agda"
+  goal:
+    id: 3
+    range: CaseSplit.agda 39:33@872-39:38@877
+  goals:
+    - id: 0
+      range: CaseSplit.agda 23:9@528-23:14@533
+      type: "Bool"
+    - id: 1
+      range: CaseSplit.agda 27:12@630-27:17@635
+      type: "ℕ"
+    - id: 2
+      range: CaseSplit.agda 35:11@746-35:16@751
+      type: "ℕ"
+    - id: 3
+      range: CaseSplit.agda 39:37@876-39:38@877
+      type: "Bool"
+    - id: 4
+      range: CaseSplit.agda 44:10@988-44:11@989
+      type: "Bool"
+    - id: 5
+      range: CaseSplit.agda 45:11@1000-45:12@1001
+      type: "Bool"
+    - id: 6
+      range: CaseSplit.agda 50:14@1068-50:15@1069
+      type: "Bool"
+    - id: 7
+      range: CaseSplit.agda 51:15@1084-51:16@1085
+      type: "Bool"
+    - id: 8
+      range: CaseSplit.agda 55:18@1180-55:19@1181
+      type: "Bool"
+    - id: 9
+      range: CaseSplit.agda 56:18@1199-56:19@1200
+      type: "Bool"
+  hiddenGoals: []
+  previousRevision: 4
+  reloaded: true
+  resynced: false
+  revision: 5
+  text:
+    case ?3:
+      false → ?
+    10 goals
+    ?0 : Bool
+    ?1 : ℕ
+    ?2 : ℕ
+    ?3 : Bool
+    ?4 : Bool
+    ?5 : Bool
+    ?6 : Bool
+    ?7 : Bool
+    ?8 : Bool
+    ?9 : Bool
+  variant: "extendedLambda"
+  warnings: []
+>>> 6 case
+result:
+  applied: true
+  checked: true
+  clauses:
+    - "first zero n = ?"
+    - "first (suc m) n = ?"
+  edits:
+    - newText: "first zero n = ?\nfirst (suc m) n = ?"
+      oldText: "first m\n      n = {!m!}"
+      range: CaseSplit.agda 34:1@728-35:16@751
+  errors: []
+  file: "CaseSplit.agda"
+  goal:
+    id: 2
+    range: CaseSplit.agda 35:11@746-35:16@751
+  goals:
+    - id: 0
+      range: CaseSplit.agda 23:9@528-23:14@533
+      type: "Bool"
+    - id: 1
+      range: CaseSplit.agda 27:12@630-27:17@635
+      type: "ℕ"
+    - id: 2
+      range: CaseSplit.agda 34:16@743-34:17@744
+      type: "ℕ"
+    - id: 3
+      range: CaseSplit.agda 35:19@763-35:20@764
+      type: "ℕ"
+    - id: 4
+      range: CaseSplit.agda 39:37@889-39:38@890
+      type: "Bool"
+    - id: 5
+      range: CaseSplit.agda 44:10@1001-44:11@1002
+      type: "Bool"
+    - id: 6
+      range: CaseSplit.agda 45:11@1013-45:12@1014
+      type: "Bool"
+    - id: 7
+      range: CaseSplit.agda 50:14@1081-50:15@1082
+      type: "Bool"
+    - id: 8
+      range: CaseSplit.agda 51:15@1097-51:16@1098
+      type: "Bool"
+    - id: 9
+      range: CaseSplit.agda 55:18@1193-55:19@1194
+      type: "Bool"
+    - id: 10
+      range: CaseSplit.agda 56:18@1212-56:19@1213
+      type: "Bool"
+  hiddenGoals: []
+  previousRevision: 5
+  reloaded: true
+  resynced: false
+  revision: 6
+  text:
+    case ?2:
+      first zero n = ?
+      first (suc m) n = ?
+    11 goals
+    ?0 : Bool
+    ?1 : ℕ
+    ?2 : ℕ
+    ?3 : ℕ
+    ?4 : Bool
+    ?5 : Bool
+    ?6 : Bool
+    ?7 : Bool
+    ?8 : Bool
+    ?9 : Bool
+    ?10 : Bool
+  variant: "function"
+  warnings: []
+>>> 7 case
+result:
+  applied: true
+  checked: true
+  clauses:
+    - "double zero = ?"
+    - "double (suc m) = ?"
+  edits:
+    - newText: "double zero = ?\ndouble (suc m) = ?"
+      oldText: "double m = {!m!}"
+      range: CaseSplit.agda 27:1@619-27:17@635
+  errors: []
+  file: "CaseSplit.agda"
+  goal:
+    id: 1
+    range: CaseSplit.agda 27:12@630-27:17@635
+  goals:
+    - id: 0
+      range: CaseSplit.agda 23:9@528-23:14@533
+      type: "Bool"
+    - id: 1
+      range: CaseSplit.agda 27:15@633-27:16@634
+      type: "ℕ"
+    - id: 2
+      range: CaseSplit.agda 28:18@652-28:19@653
+      type: "ℕ"
+    - id: 3
+      range: CaseSplit.agda 35:16@761-35:17@762
+      type: "ℕ"
+    - id: 4
+      range: CaseSplit.agda 36:19@781-36:20@782
+      type: "ℕ"
+    - id: 5
+      range: CaseSplit.agda 40:37@907-40:38@908
+      type: "Bool"
+    - id: 6
+      range: CaseSplit.agda 45:10@1019-45:11@1020
+      type: "Bool"
+    - id: 7
+      range: CaseSplit.agda 46:11@1031-46:12@1032
+      type: "Bool"
+    - id: 8
+      range: CaseSplit.agda 51:14@1099-51:15@1100
+      type: "Bool"
+    - id: 9
+      range: CaseSplit.agda 52:15@1115-52:16@1116
+      type: "Bool"
+    - id: 10
+      range: CaseSplit.agda 56:18@1211-56:19@1212
+      type: "Bool"
+    - id: 11
+      range: CaseSplit.agda 57:18@1230-57:19@1231
+      type: "Bool"
+  hiddenGoals: []
+  previousRevision: 6
+  reloaded: true
+  resynced: false
+  revision: 7
+  text:
+    case ?1:
+      double zero = ?
+      double (suc m) = ?
+    12 goals
+    ?0 : Bool
+    ?1 : ℕ
+    ?2 : ℕ
+    ?3 : ℕ
+    ?4 : ℕ
+    ?5 : Bool
+    ?6 : Bool
+    ?7 : Bool
+    ?8 : Bool
+    ?9 : Bool
+    ?10 : Bool
+    ?11 : Bool
+  variant: "function"
+  warnings: []
+>>> 8 case
+result:
+  applied: true
+  checked: true
+  clauses:
+    - "not true = ?"
+    - "not false = ?"
+  edits:
+    - newText: "not true = ?\nnot false = ?"
+      oldText: "not x = {!x!}"
+      range: CaseSplit.agda 23:1@520-23:14@533
+  errors: []
+  file: "CaseSplit.agda"
+  goal:
+    id: 0
+    range: CaseSplit.agda 23:9@528-23:14@533
+  goals:
+    - id: 0
+      range: CaseSplit.agda 23:12@531-23:13@532
+      type: "Bool"
+    - id: 1
+      range: CaseSplit.agda 24:13@545-24:14@546
+      type: "Bool"
+    - id: 2
+      range: CaseSplit.agda 28:15@646-28:16@647
+      type: "ℕ"
+    - id: 3
+      range: CaseSplit.agda 29:18@665-29:19@666
+      type: "ℕ"
+    - id: 4
+      range: CaseSplit.agda 36:16@774-36:17@775
+      type: "ℕ"
+    - id: 5
+      range: CaseSplit.agda 37:19@794-37:20@795
+      type: "ℕ"
+    - id: 6
+      range: CaseSplit.agda 41:37@920-41:38@921
+      type: "Bool"
+    - id: 7
+      range: CaseSplit.agda 46:10@1032-46:11@1033
+      type: "Bool"
+    - id: 8
+      range: CaseSplit.agda 47:11@1044-47:12@1045
+      type: "Bool"
+    - id: 9
+      range: CaseSplit.agda 52:14@1112-52:15@1113
+      type: "Bool"
+    - id: 10
+      range: CaseSplit.agda 53:15@1128-53:16@1129
+      type: "Bool"
+    - id: 11
+      range: CaseSplit.agda 57:18@1224-57:19@1225
+      type: "Bool"
+    - id: 12
+      range: CaseSplit.agda 58:18@1243-58:19@1244
+      type: "Bool"
+  hiddenGoals: []
+  previousRevision: 7
+  reloaded: true
+  resynced: false
+  revision: 8
+  text:
+    case ?0:
+      not true = ?
+      not false = ?
+    13 goals
+    ?0 : Bool
+    ?1 : Bool
+    ?2 : ℕ
+    ?3 : ℕ
+    ?4 : ℕ
+    ?5 : ℕ
+    ?6 : Bool
+    ?7 : Bool
+    ?8 : Bool
+    ?9 : Bool
+    ?10 : Bool
+    ?11 : Bool
+    ?12 : Bool
+  variant: "function"
+  warnings: []
+! source
+  -- Material for case splitting: a clause of every shape the agent has
+  -- to write over.  Splitting replaces the whole clause, so the shapes
+  -- that the Emacs mode's line replacement cannot handle -- a clause
+  -- spread over two lines, a clause of an inline extended lambda --
+  -- matter here.
+  
+  module CaseSplit where
+  
+  data Bool : Set where
+    true false : Bool
+  
+  data ℕ : Set where
+    zero : ℕ
+    suc  : ℕ → ℕ
+  
+  record Pair (A B : Set) : Set where
+    field
+      fst : A
+      snd : B
+  
+  -- A plain function clause.
+  not : Bool → Bool
+  not true = ?
+  not false = ?
+  
+  -- A clause with a where block, which the split must leave standing.
+  double : ℕ → ℕ
+  double zero = ?
+  double (suc m) = ?
+    where
+    twice : ℕ → ℕ
+    twice n = n
+  
+  -- A clause spread over two lines.
+  first : ℕ → ℕ → ℕ
+  first zero n = ?
+  first (suc m) n = ?
+  
+  -- A clause of an inline extended lambda, beside one that stays.
+  andTrue : Bool → Bool
+  andTrue = λ { true → true ; false → ? }
+  
+  -- A clause of a λ where, which stays on a line of its own.
+  negate : Bool → Bool
+  negate = λ where
+    true → ?
+    false → ?
+  
+  -- A with-clause.
+  isZero : ℕ → Bool
+  isZero m with m
+  ... | zero = ?
+  ... | suc x = ?
+  
+  -- Splitting on the result rather than on a variable.
+  pair : Pair Bool Bool
+  pair .Pair.fst = ?
+  pair .Pair.snd = ?
+>>> 9 case
+error:
+  agdaCode: "Interaction.CaseSplitError"
+  code: "agdaError"
+  message:
+    CaseSplit.agda:23.12-13: error: [Interaction.CaseSplitError]
+    Unbound variable nope
+    when checking that the expression ? has type Bool
+  range: CaseSplit.agda 23:12@531-23:13@532
+  related:
+    - message:
+        when checking that the expression ? has type Bool
+      range: CaseSplit.agda 23:12@531-23:13@532
+    - message:
+        when checking that the clause not true = ? has type Bool → Bool
+      range: CaseSplit.agda 23:1@520-23:13@532
+    - message:
+        when checking the definition of not
+      range: CaseSplit.agda 23:1@520-24:14@546
+>>> 10 case
+error:
+  agdaCode: "SplitError.CosplitNoRecordType"
+  code: "agdaError"
+  message:
+    CaseSplit.agda:23.12-13: error: [SplitError.CosplitNoRecordType]
+    Cannot split into projections because the target type Bool is not a
+    record type
+    when checking that the expression ? has type Bool
+  range: CaseSplit.agda 23:12@531-23:13@532
+  related:
+    - message:
+        when checking that the expression ? has type Bool
+      range: CaseSplit.agda 23:12@531-23:13@532
+    - message:
+        when checking that the clause not true = ? has type Bool → Bool
+      range: CaseSplit.agda 23:1@520-23:13@532
+    - message:
+        when checking the definition of not
+      range: CaseSplit.agda 23:1@520-24:14@546
+! file unchanged
+>>> 11 close
+result:
+  checked: true
+  closed: true
+  file: "CaseSplit.agda"
+  reloaded: false
+  resynced: false
+  revision: 8
+  text:
+    session closed

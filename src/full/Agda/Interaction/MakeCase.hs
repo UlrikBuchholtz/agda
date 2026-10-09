@@ -263,8 +263,14 @@ recheckAbstractClause t sub acl = checkClauseLHS t sub acl $ \ lhs -> do
 
 
 -- | Entry point for case splitting tactic.
+--
+--   Returns the function being split, the case context, the source
+--   range of the clause that was split, and the clauses that replace
+--   it.  A frontend that owns the source (rather than telling an editor
+--   what to do with its buffer) needs that range: it is the text the
+--   new clauses are to be written over.
 
-makeCase :: InteractionId -> Range -> String -> TCM (QName, CaseContext, [A.Clause])
+makeCase :: InteractionId -> Range -> String -> TCM (QName, CaseContext, Range, [A.Clause])
 makeCase hole rng s = withInteractionId hole $ locallyTC eMakeCase (const True) $ do
 
   -- Jesper, 2018-12-10: print unsolved metas in dot patterns as _
@@ -364,7 +370,7 @@ makeCase hole rng s = withInteractionId hole $ locallyTC eMakeCase (const True) 
 
   if concat vars == "." then do
     cl <- makeAbstractClause f rhs NoEllipsis $ clauseToSplitClause clause
-    return (f, casectxt, [cl])
+    return (f, casectxt, clauseSourceRange absCl, [cl])
 
   -- If we have no split variables, split on result.
 
@@ -412,7 +418,7 @@ makeCase hole rng s = withInteractionId hole $ locallyTC eMakeCase (const True) 
           -- mapM (snd <.> fixTarget) $ splitClauses cov
           return cov
     checkClauseIsClean ipCl
-    (f, casectxt,) <$> do
+    (f, casectxt, clauseSourceRange absCl,) <$> do
       -- Andreas, 2020-05-18, issue #4536
       -- When result splitting yields no clauses, replace rhs by @record{}@.
       if null scs then
@@ -484,9 +490,18 @@ makeCase hole rng s = withInteractionId hole $ locallyTC eMakeCase (const True) 
       , nest 2 $ vcat $ map prettyA cs
       ]
     checkClauseIsClean ipCl
-    return (f, casectxt, cs)
+    return (f, casectxt, clauseSourceRange absCl, cs)
 
   where
+  -- The text the new clauses are written over: the left hand side and
+  -- the right hand side, but not a @where@ block.  The clauses Agda
+  -- generates do not carry the @where@ declarations along, so writing
+  -- over them would delete them; left where they are, they stay
+  -- attached to the last of the new clauses, which is also what the
+  -- Emacs mode's line-replacement does.
+  clauseSourceRange :: A.SpineClause -> Range
+  clauseSourceRange cl = fuseRange (A.clauseLHS cl) (A.clauseRHS cl)
+
   failNoCop = interactionError $ CaseSplitError $
     "OPTION --copatterns needed to split on result here"
 

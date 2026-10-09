@@ -1,0 +1,4 @@
+ret > ExitFailure 71
+out > Error: The --build-name-index mode can be omitted or one of {refresh, full}.
+out > Run 'agda --help' for help on command line options.
+out >

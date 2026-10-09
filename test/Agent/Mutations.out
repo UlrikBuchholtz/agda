@@ -1,0 +1,465 @@
+>>> 1 load
+result:
+  checked: true
+  errors: []
+  file: "Mutations.agda"
+  goals:
+    - id: 0
+      range: Mutations.agda 29:17@645-29:21@649
+      type: "zero + zero ≡ zero"
+    - id: 1
+      range: Mutations.agda 30:26@675-30:30@679
+      type: "n + zero ≡ n"
+    - id: 2
+      range: Mutations.agda 34:5@766-34:6@767
+      type: "Pair ℕ ℕ"
+    - id: 3
+      range: Mutations.agda 38:7@833-38:11@837
+      type: "ℕ → ℕ"
+    - id: 4
+      range: Mutations.agda 42:8@920-42:12@924
+      type: "ℕ"
+    - id: 5
+      range: Mutations.agda 46:18@1011-46:22@1015
+      type: "ℕ"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    6 goals
+    ?0 : zero + zero ≡ zero
+    ?1 : n + zero ≡ n
+    ?2 : Pair ℕ ℕ
+    ?3 : ℕ → ℕ
+    ?4 : ℕ
+    ?5 : ℕ
+  warnings: []
+>>> 2 auto
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "refl"
+      oldText: "{!!}"
+      range: Mutations.agda 29:17@645-29:21@649
+  errors: []
+  file: "Mutations.agda"
+  goals:
+    - id: 0
+      range: Mutations.agda 30:26@675-30:30@679
+      type: "n + zero ≡ n"
+    - id: 1
+      range: Mutations.agda 34:5@766-34:6@767
+      type: "Pair ℕ ℕ"
+    - id: 2
+      range: Mutations.agda 38:7@833-38:11@837
+      type: "ℕ → ℕ"
+    - id: 3
+      range: Mutations.agda 42:8@920-42:12@924
+      type: "ℕ"
+    - id: 4
+      range: Mutations.agda 46:18@1011-46:22@1015
+      type: "ℕ"
+  hiddenGoals: []
+  previousRevision: 1
+  reloaded: true
+  resynced: false
+  revision: 2
+  text:
+    auto ?0 = refl
+    5 goals
+    ?0 : n + zero ≡ n
+    ?1 : Pair ℕ ℕ
+    ?2 : ℕ → ℕ
+    ?3 : ℕ
+    ?4 : ℕ
+  warnings: []
+>>> 3 give
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "(+-idʳ n)"
+      oldText: "{!!}"
+      range: Mutations.agda 30:26@675-30:30@679
+  errors: []
+  file: "Mutations.agda"
+  goal:
+    id: 0
+    range: Mutations.agda 30:26@675-30:30@679
+  goals:
+    - id: 0
+      range: Mutations.agda 34:5@771-34:6@772
+      type: "Pair ℕ ℕ"
+    - id: 1
+      range: Mutations.agda 38:7@838-38:11@842
+      type: "ℕ → ℕ"
+    - id: 2
+      range: Mutations.agda 42:8@925-42:12@929
+      type: "ℕ"
+    - id: 3
+      range: Mutations.agda 46:18@1016-46:22@1020
+      type: "ℕ"
+  hiddenGoals: []
+  previousRevision: 2
+  reloaded: true
+  resynced: false
+  revision: 3
+  text:
+    give ?0 = (+-idʳ n)
+    4 goals
+    ?0 : Pair ℕ ℕ
+    ?1 : ℕ → ℕ
+    ?2 : ℕ
+    ?3 : ℕ
+  warnings: []
+! source
+  -- Material for the mutating methods of the agent frontend: enough
+  -- holes, written both ways, to drive the file to a complete proof.
+  
+  module Mutations where
+  
+  infixl 20 _+_
+  infix  10 _≡_
+  
+  data ℕ : Set where
+    zero : ℕ
+    suc  : ℕ → ℕ
+  
+  _+_ : ℕ → ℕ → ℕ
+  zero  + n = n
+  suc m + n = suc (m + n)
+  
+  data _≡_ {A : Set} (x : A) : A → Set where
+    refl : x ≡ x
+  
+  cong : {A B : Set} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
+  cong f refl = refl
+  
+  data Pair (A B : Set) : Set where
+    _,_ : A → B → Pair A B
+  
+  -- The second hole sits in an argument position, so what is given has
+  -- to be parenthesised on the way in.
+  +-idʳ : (n : ℕ) → n + zero ≡ n
+  +-idʳ zero    = refl
+  +-idʳ (suc n) = cong suc (+-idʳ n)
+  
+  -- Refining this one leaves a goal per argument of the constructor.
+  p : Pair ℕ ℕ
+  p = ?
+  
+  -- Introduction turns this one into a lambda.
+  idℕ : ℕ → ℕ
+  idℕ = {!!}
+  
+  -- An expression spanning several lines is indented to the hole.
+  four : ℕ
+  four = {!!}
+  
+  -- The type checker solves this one by itself.
+  ex : (n : ℕ) → n ≡ n
+  ex n = refl {x = {!!}}
+>>> 4 refine
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "? , ?"
+      oldText: "?"
+      range: Mutations.agda 34:5@771-34:6@772
+  errors: []
+  file: "Mutations.agda"
+  goal:
+    id: 0
+    range: Mutations.agda 34:5@771-34:6@772
+  goals:
+    - id: 0
+      range: Mutations.agda 34:5@771-34:6@772
+      type: "ℕ"
+    - id: 1
+      range: Mutations.agda 34:9@775-34:10@776
+      type: "ℕ"
+    - id: 2
+      range: Mutations.agda 38:7@842-38:11@846
+      type: "ℕ → ℕ"
+    - id: 3
+      range: Mutations.agda 42:8@929-42:12@933
+      type: "ℕ"
+    - id: 4
+      range: Mutations.agda 46:18@1020-46:22@1024
+      type: "ℕ"
+  hiddenGoals: []
+  previousRevision: 3
+  reloaded: true
+  resynced: false
+  revision: 4
+  text:
+    refine ?0 = ? , ?
+    5 goals
+    ?0 : ℕ
+    ?1 : ℕ
+    ?2 : ℕ → ℕ
+    ?3 : ℕ
+    ?4 : ℕ
+  warnings: []
+>>> 5 give
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "zero"
+      oldText: "?"
+      range: Mutations.agda 34:5@771-34:6@772
+  errors: []
+  file: "Mutations.agda"
+  goal:
+    id: 0
+    range: Mutations.agda 34:5@771-34:6@772
+  goals:
+    - id: 0
+      range: Mutations.agda 34:12@778-34:13@779
+      type: "ℕ"
+    - id: 1
+      range: Mutations.agda 38:7@845-38:11@849
+      type: "ℕ → ℕ"
+    - id: 2
+      range: Mutations.agda 42:8@932-42:12@936
+      type: "ℕ"
+    - id: 3
+      range: Mutations.agda 46:18@1023-46:22@1027
+      type: "ℕ"
+  hiddenGoals: []
+  previousRevision: 4
+  reloaded: true
+  resynced: false
+  revision: 5
+  text:
+    give ?0 = zero
+    4 goals
+    ?0 : ℕ
+    ?1 : ℕ → ℕ
+    ?2 : ℕ
+    ?3 : ℕ
+  warnings: []
+>>> 6 give
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "suc zero"
+      oldText: "?"
+      range: Mutations.agda 34:12@778-34:13@779
+  errors: []
+  file: "Mutations.agda"
+  goal:
+    id: 0
+    range: Mutations.agda 34:12@778-34:13@779
+  goals:
+    - id: 0
+      range: Mutations.agda 38:7@852-38:11@856
+      type: "ℕ → ℕ"
+    - id: 1
+      range: Mutations.agda 42:8@939-42:12@943
+      type: "ℕ"
+    - id: 2
+      range: Mutations.agda 46:18@1030-46:22@1034
+      type: "ℕ"
+  hiddenGoals: []
+  previousRevision: 5
+  reloaded: true
+  resynced: false
+  revision: 6
+  text:
+    give ?0 = suc zero
+    3 goals
+    ?0 : ℕ → ℕ
+    ?1 : ℕ
+    ?2 : ℕ
+  warnings: []
+>>> 7 intro
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "λ x → ?"
+      oldText: "{!!}"
+      range: Mutations.agda 38:7@852-38:11@856
+  errors: []
+  file: "Mutations.agda"
+  goal:
+    id: 0
+    range: Mutations.agda 38:7@852-38:11@856
+  goals:
+    - id: 0
+      range: Mutations.agda 38:13@858-38:14@859
+      type: "ℕ"
+    - id: 1
+      range: Mutations.agda 42:8@942-42:12@946
+      type: "ℕ"
+    - id: 2
+      range: Mutations.agda 46:18@1033-46:22@1037
+      type: "ℕ"
+  hiddenGoals: []
+  previousRevision: 6
+  reloaded: true
+  resynced: false
+  revision: 7
+  text:
+    intro ?0 = λ x → ?
+    3 goals
+    ?0 : ℕ
+    ?1 : ℕ
+    ?2 : ℕ
+  warnings: []
+>>> 8 give
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "x"
+      oldText: "?"
+      range: Mutations.agda 38:13@858-38:14@859
+  errors: []
+  file: "Mutations.agda"
+  goal:
+    id: 0
+    range: Mutations.agda 38:13@858-38:14@859
+  goals:
+    - id: 0
+      range: Mutations.agda 42:8@942-42:12@946
+      type: "ℕ"
+    - id: 1
+      range: Mutations.agda 46:18@1033-46:22@1037
+      type: "ℕ"
+  hiddenGoals: []
+  previousRevision: 7
+  reloaded: true
+  resynced: false
+  revision: 8
+  text:
+    give ?0 = x
+    2 goals
+    ?0 : ℕ
+    ?1 : ℕ
+  warnings: []
+>>> 9 give
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "suc (suc\n       (suc (suc zero)))"
+      oldText: "{!!}"
+      range: Mutations.agda 42:8@942-42:12@946
+  errors: []
+  file: "Mutations.agda"
+  goal:
+    id: 0
+    range: Mutations.agda 42:8@942-42:12@946
+  goals:
+    - id: 0
+      range: Mutations.agda 47:18@1062-47:22@1066
+      type: "ℕ"
+  hiddenGoals: []
+  previousRevision: 8
+  reloaded: true
+  resynced: false
+  revision: 9
+  text:
+    give ?0 = suc (suc
+           (suc (suc zero)))
+    1 goal
+    ?0 : ℕ
+  warnings: []
+>>> 10 solve
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "n"
+      oldText: "{!!}"
+      range: Mutations.agda 47:18@1062-47:22@1066
+  errors: []
+  file: "Mutations.agda"
+  goals: []
+  hiddenGoals: []
+  previousRevision: 9
+  reloaded: true
+  resynced: false
+  revision: 10
+  text:
+    solve ?0 = n
+    0 goals
+  warnings: []
+>>> 11 goals
+result:
+  checked: true
+  errors: []
+  file: "Mutations.agda"
+  goals: []
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 10
+  text:
+    0 goals
+  warnings: []
+! source
+  -- Material for the mutating methods of the agent frontend: enough
+  -- holes, written both ways, to drive the file to a complete proof.
+  
+  module Mutations where
+  
+  infixl 20 _+_
+  infix  10 _≡_
+  
+  data ℕ : Set where
+    zero : ℕ
+    suc  : ℕ → ℕ
+  
+  _+_ : ℕ → ℕ → ℕ
+  zero  + n = n
+  suc m + n = suc (m + n)
+  
+  data _≡_ {A : Set} (x : A) : A → Set where
+    refl : x ≡ x
+  
+  cong : {A B : Set} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
+  cong f refl = refl
+  
+  data Pair (A B : Set) : Set where
+    _,_ : A → B → Pair A B
+  
+  -- The second hole sits in an argument position, so what is given has
+  -- to be parenthesised on the way in.
+  +-idʳ : (n : ℕ) → n + zero ≡ n
+  +-idʳ zero    = refl
+  +-idʳ (suc n) = cong suc (+-idʳ n)
+  
+  -- Refining this one leaves a goal per argument of the constructor.
+  p : Pair ℕ ℕ
+  p = zero , suc zero
+  
+  -- Introduction turns this one into a lambda.
+  idℕ : ℕ → ℕ
+  idℕ = λ x → x
+  
+  -- An expression spanning several lines is indented to the hole.
+  four : ℕ
+  four = suc (suc
+         (suc (suc zero)))
+  
+  -- The type checker solves this one by itself.
+  ex : (n : ℕ) → n ≡ n
+  ex n = refl {x = n}
+>>> 12 close
+result:
+  checked: true
+  closed: true
+  file: "Mutations.agda"
+  reloaded: false
+  resynced: false
+  revision: 10
+  text:
+    session closed

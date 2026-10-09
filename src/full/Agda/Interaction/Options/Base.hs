@@ -1204,6 +1204,9 @@ ghciInteractionFlag o = return $ o { optGHCiInteraction = True }
 jsonInteractionFlag :: Flag CommandLineOptions
 jsonInteractionFlag o = return $ o { optJSONInteraction = True }
 
+agentInteractionFlag :: Flag CommandLineOptions
+agentInteractionFlag o = return $ o { optAgentInteraction = True }
+
 interactionExitFlag :: Flag CommandLineOptions
 interactionExitFlag o = return $ o { optExitOnError = True }
 
@@ -1243,6 +1246,17 @@ cubicalFlagOptArg s = case s of
   Just "compatible" -> cubicalCompatibleFlag
   _ -> return $ throwError
     "Cubical variant can be omitted or one of {compatible, no-glue, erased, full}."
+
+-- | @--build-name-index[=MODE]@: a refresh by default, since re-rendering a
+--   module that has not moved buys nothing.
+buildNameIndexFlag :: Maybe String -> Flag CommandLineOptions
+buildNameIndexFlag s o = case s of
+  Nothing        -> build RefreshNameIndex
+  Just "refresh" -> build RefreshNameIndex
+  Just "full"    -> build RebuildNameIndex
+  Just _         -> throwError
+    "The --build-name-index mode can be omitted or one of {refresh, full}."
+  where build m = return o{ optBuildNameIndex = Just m }
 
 cubicalCompatibleFlag :: Flag PragmaOptions
 cubicalCompatibleFlag o =
@@ -1431,6 +1445,12 @@ mainModeOptions = ("Main modes of operation",)
     [ Option []     ["build-library"] (NoArg \ o -> return o{ optBuildLibrary = True })
                     "build all modules included by the @.agda-lib@ file in the current directory"
 
+    , Option []     ["build-name-index"] (OptArg buildNameIndexFlag "MODE")
+                    "index the names of every module the current project can import (MODE is refresh or full)"
+
+    , Option []     ["name-index-status"] (NoArg \ o -> return o{ optNameIndexStatus = True })
+                    "print, as JSON, where the current project's name index is and what it covers"
+
     , Option ['I']  ["interactive"] (NoArg interactiveFlag)
                     "start in interactive mode"
 
@@ -1438,6 +1458,8 @@ mainModeOptions = ("Main modes of operation",)
                     "for use with the Emacs mode"
     , Option []     ["interaction-json"] (NoArg jsonInteractionFlag)
                     "for use with other editors such as Atom"
+    , Option []     ["interaction-agent"] (NoArg agentInteractionFlag)
+                    "for use with programmatic clients such as agda-client"
     ]
 
 projectOptions :: (String, [OptDescr (Flag CommandLineOptions)])

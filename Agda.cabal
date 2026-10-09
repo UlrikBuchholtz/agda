@@ -102,6 +102,7 @@ extra-source-files:
     src/data/emacs-mode/agda2-highlight.el
     src/data/emacs-mode/agda2-mode-pkg.el
     src/data/emacs-mode/agda2-mode.el
+    src/data/emacs-mode/agda2-name-index.el
     src/data/emacs-mode/agda2-queue.el
     src/data/emacs-mode/agda2.el
     src/data/emacs-mode/annotation.el
@@ -165,6 +166,7 @@ data-files:
     emacs-mode/agda2-highlight.el
     emacs-mode/agda2-mode-pkg.el
     emacs-mode/agda2-mode.el
+    emacs-mode/agda2-name-index.el
     emacs-mode/agda2-queue.el
     emacs-mode/agda2.el
     emacs-mode/annotation.el
@@ -609,6 +611,10 @@ library
       Agda.Compiler.Treeless.Uncase
       Agda.Compiler.Treeless.Unused
       Agda.ImpossibleTest
+      Agda.Interaction.Agent.Diagnostic
+      Agda.Interaction.Agent.Edit
+      Agda.Interaction.Agent.Protocol
+      Agda.Interaction.Agent.Top
       Agda.Interaction.AgdaTop
       Agda.Interaction.Base
       Agda.Interaction.BasicOps
@@ -647,6 +653,7 @@ library
       Agda.Interaction.Library.Parse
       Agda.Interaction.MakeCase
       Agda.Interaction.Monad
+      Agda.Interaction.NameIndex
       Agda.Interaction.Options
       Agda.Interaction.Options.Arguments
       Agda.Interaction.Options.BashCompletion
@@ -1048,6 +1055,52 @@ executable agda
   else
     ghc-options: -with-rtsopts=-I0
 
+-- agda-client executable
+---------------------------------------------------------------------------
+
+-- | A one-shot command line client for @agda --interaction-agent@.
+--   It keeps a per-project daemon (this same executable, run with the
+--   hidden @--daemon@ flag) alive behind a Unix socket so that the Agda
+--   session survives between invocations.
+--
+--   Deliberately does not depend on the Agda library: it only knows the
+--   request/response envelope and passes payloads through, so it stays
+--   cheap to build.
+
+executable agda-client
+  import:           language
+
+  hs-source-dirs:   src/agda-client src/setup
+  main-is:          Main.hs
+  autogen-modules:
+    Paths_Agda
+  other-modules:
+    Paths_Agda
+    Agda.Version
+    Agda.VersionCommit
+
+  -- Agda.VersionCommit splices the commit in with Template Haskell.
+  if flag(version-with-git-hash)
+    build-depends:
+      , gitrev             >= 1.3.1     && < 2
+      , template-haskell   >= 2.18.0.0  && < 2.26
+
+  build-depends:
+    , aeson                >= 2.0.3.0   && < 2.4
+    , base                 >= 4.16.4.0  && < 4.24
+    , bytestring           >= 0.11.4.0  && < 0.13
+    , containers           >= 0.6.5.1   && < 0.9
+    , directory            >= 1.3.6.2   && < 1.4
+    , filepath             >= 1.4.2.1   && < 1.6
+    , network              >= 3.1.2.7   && < 3.3
+    , process              >= 1.6.16.0  && < 1.7
+    , stm                  >= 2.5.0.2   && < 2.6
+    , text                 >= 1.2.5.0   && < 2.3
+    , unix-compat          >= 0.5.4     && < 0.8
+
+  ghc-options:
+    -threaded
+
 -- agda-mode executable
 ---------------------------------------------------------------------------
 
@@ -1104,6 +1157,7 @@ executable agda-tests
   hs-source-dirs:   test/
   main-is:          Main.hs
   other-modules:
+      Agent.Tests
       Bugs.Tests
       BuildFail.Tests
       BuildSucceed.Tests
@@ -1117,6 +1171,7 @@ executable agda-tests
       Internal.Interaction.Highlighting.Precise
       Internal.Interaction.Highlighting.Range
       Internal.Interaction.Library
+      Internal.Interaction.NameIndex
       Internal.Interaction.Options
       Internal.Syntax.Abstract.Name
       Internal.Syntax.Common
@@ -1182,6 +1237,7 @@ executable agda-tests
 
   build-depends:
     , Agda
+    , aeson
     , array
     , base
     , bytestring

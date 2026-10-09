@@ -10,6 +10,7 @@ import           Test.Tasty                     as T
 import           Test.Tasty.Silver.Interactive  as TM
 import           Test.Tasty.Silver.Filter       (RegexFilter)
 
+import qualified Agent.Tests
 import qualified Bugs.Tests
 import qualified BuildFail.Tests
 import qualified BuildSucceed.Tests
@@ -78,6 +79,7 @@ allTests = do
       {- 2 -} sg Fail.Tests.tests           :
       {- 3 -} sg Bugs.Tests.tests           :
       {-   -} sg Interaction.Simple.Tests.tests :
+      {-   -} sg Agent.Tests.tests           :
       {- 4 -} pu Interactive.Tests.tests    :
       {- 9 -} sg UserManual.Tests.tests     :
       {- 5 -} sg LaTeXAndHTML.Tests.tests   :
@@ -120,10 +122,14 @@ testsWithSystemDeps = concat
   , Compiler.Tests.stdlibTestFilter
   ]
 
--- | Some tests get extra setup through the @Makefile@.
+-- | Some tests get extra setup through the @Makefile@: it also installs
+--   @agda-client@ beside @agda@, which the client test needs.
 
 makefileDependentTests :: [RegexFilter]
-makefileDependentTests = Succeed.Tests.makefileDependentTests
+makefileDependentTests = concat
+  [ Succeed.Tests.makefileDependentTests
+  , Agent.Tests.clientTestFilter
+  ]
 
 -- | Tests that are always disabled
 alwaysDisabledTests :: [RegexFilter]

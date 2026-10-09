@@ -65,6 +65,12 @@ data CommandLineOptions = Options
   , optPrintHelp             :: Maybe Help
   , optBuildLibrary          :: Bool
       -- ^ @--build-library@: Build all modules in the current library.
+  , optBuildNameIndex        :: Maybe NameIndexBuild
+      -- ^ @--build-name-index@: Index the names the current project
+      --   could import.
+  , optNameIndexStatus       :: Bool
+      -- ^ @--name-index-status@: Report where that index is and what
+      --   it covers.
   , optSetup                 :: Bool
       -- ^ Force Agda to self-setup at startup.
   , optEmacsMode             :: Set EmacsModeCommand
@@ -80,6 +86,8 @@ data CommandLineOptions = Options
       -- ^ @--interaction@ mode.
   , optJSONInteraction       :: Bool
       -- ^ @--interaction-json@ mode.
+  , optAgentInteraction      :: Bool
+      -- ^ @--interaction-agent@ mode.
   , optExitOnError           :: !Bool
       -- ^ Exit if an interactive command fails.
   , optCompileDir            :: Maybe FilePath
@@ -281,6 +289,15 @@ data InfectiveCoinfective
   | Coinfective
   deriving (Eq, Show, Generic)
 
+-- | How much of the name index @--build-name-index@ builds.
+data NameIndexBuild
+  = RefreshNameIndex
+      -- ^ Re-index the modules whose interfaces have moved since the
+      --   index was built, and keep the rest of it.
+  | RebuildNameIndex
+      -- ^ Index everything, whatever is on disk already.
+  deriving (Eq, Show, Generic)
+
 -- | Options @--version@ and @--numeric-version@ (last wins).
 data PrintAgdaVersion
   = PrintAgdaVersion
@@ -327,4 +344,5 @@ instance NFData Parallelism
 instance NFData DiagnosticsColours
 instance NFData EmacsModeCommand
 instance NFData InfectiveCoinfective
+instance NFData NameIndexBuild
 instance NFData PrintAgdaVersion

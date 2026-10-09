@@ -1,0 +1,26 @@
+# One module of the project leaves a meta unsolved, and another imports
+# it.  Agda writes no interface for a module like that and will not
+# reuse the check, so the importer has it checked a second time -- in
+# the one state the builder checks the whole project in, which used to
+# be an `Ambiguous name` internal error that took the whole build down
+# and left the project with no index at all.
+#
+# What it should do is what it does for every other module that will not
+# load: index what it could read, and record the rest.  Every query is
+# scoped to `Lib`, so that the counts do not depend on how many modules
+# Agda's own primitive library happens to have.
+!file Lib/Main.agda
+{"method":"load","params":{"file":"%FILE%"}}
+# The build gets through the whole project: Lib.Main and Lib.Unsolved
+# are rendered, and Lib.Uses -- which cannot be loaded, since importing
+# Lib.Unsolved raises its unsolved metas -- is recorded, not indexed.
+# Only Lib.Main has an interface, so it alone is `indexed`; the other
+# two are `unindexed`, which is the honest answer for a module Agda
+# would have to check again.
+{"method":"buildIndex","params":{"module":"Lib"}}
+# The point of the whole exercise: a name defined in the module with the
+# unsolved meta is still there to be found.
+{"method":"findNames","params":{"pattern":"double","module":"Lib"}}
+# And so is one from the file that was loaded.
+{"method":"findNames","params":{"pattern":"identity","module":"Lib"}}
+{"method":"close"}

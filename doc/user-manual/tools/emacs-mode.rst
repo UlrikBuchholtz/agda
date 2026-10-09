@@ -238,6 +238,14 @@ they limit their action to the hole and take context and content of the hole int
 :kbd:`C-c C-z`
      :ref:`search-about`
 
+:kbd:`C-c C-g`
+     :ref:`find-name`.  Find a name anywhere the project could import
+     from, rather than in the scope of this file.
+
+:kbd:`C-c C-u`
+     Build or refresh the name index :kbd:`C-c C-g` reads;
+     :kbd:`C-u C-c C-u` builds it again from scratch.
+
 :kbd:`C-c C-x M-;`
      Comment/uncomment rest of buffer.
 
@@ -329,6 +337,69 @@ Other commands
 
 :kbd:`M-,`
      Go back to previous location.
+
+.. _find-name:
+
+Finding a name the project can import
+=====================================
+
+:kbd:`C-c C-g` answers one question: *does this project already define
+something called roughly this, and if so, what is its type and where is
+it?*  It searches every module the project could write an ``import``
+for — its own include directories plus the transitive ``depend:``
+closure of its ``.agda-lib`` — and not the scope of the file being
+edited, which is what :ref:`search-about` and :kbd:`C-c C-o` do.
+
+It prompts for a pattern, defaulting to the name at point, and offers
+the matches ranked: the whole name first, then a proper prefix of it,
+then a whole hyphen- or underscore-separated component of it, then
+anywhere in it.  Each candidate is shown with its kind, the module it
+is defined in and its type, so that ``is-basis`` and ``is-basis-for``
+can be told apart without opening either file.  Writing ``PATTERN in
+MODULE`` restricts the search to a top-level module prefix.
+
+Choosing a candidate inserts its name at point.
+``agda2-name-index-default-action`` changes that to jumping to the
+definition or inserting an ``open import`` for its module, and a prefix
+argument — :kbd:`C-u C-c C-g` — asks which of the three to do this
+time.  While the candidates are showing, :kbd:`M-.` and :kbd:`M-RET`
+take the candidate :kbd:`RET` would have taken and jump to it, or
+insert the ``open import``, whatever the default action is.
+
+An action that edits is carried out in the buffer the search was
+started from.  The ``open import`` goes where an import has to go —
+after the last one, or after the module header — which is usually not
+where point is, so the echo area says which line it went to.
+``M-x agda2-name-index-describe`` then shows the hit that was acted on
+in full, including the rendering of its type with implicit arguments
+shown.
+
+The index stores both renderings of every type, and :kbd:`M-i`, while
+the candidates are showing, switches the list between them: hidden is
+what twenty hits are meant to be read as, shown is what one needs
+before writing the application — not least because a positional
+implicit can bind a universe level that an enclosing module
+generalised, which the signature as written does not show.  Nothing is
+searched again, so the switch is a redisplay.  It lasts for the search
+in progress; ``agda2-name-index-show-implicit`` is the rendering a
+search starts from.
+
+This never talks to the Agda process.  The types have been rendered to
+text ahead of time by :option:`--build-name-index`, so answering is a
+string match over a file: the search works while Agda is busy checking
+something else, which is exactly when one goes looking for a name one
+has not got.  It also means the search is only as current as that file.
+:kbd:`C-c C-u` builds the index, and refreshes it afterwards — a
+refresh re-renders just the modules whose interfaces have moved, which
+after an ordinary edit takes a second or two.  Until an index has been
+built there is nothing to search, and :kbd:`C-c C-g` says so; when part
+of the project has moved since, the prompt says how much.
+
+The index is a published format, and everything above — which names are
+in it, what is recorded per name, and how a pattern is matched and
+ranked — is described under :ref:`the-name-index`, alongside the agent
+interface's ``findNames``, which answers the same question from the
+same file.
 
 .. _unicode-input:
 

@@ -1,0 +1,176 @@
+! file Lib/Main.agda
+>>> 1 load
+result:
+  checked: true
+  errors: []
+  file: "Lib/Main.agda"
+  goals: []
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    0 goals
+  warnings: []
+>>> 2 buildIndex
+result:
+  built: true
+  checked: true
+  exitCode: 0
+  file: "Lib/Main.agda"
+  forced: false
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 5
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 1
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 3
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 2
+    unindexedModules:
+      - module: "Lib.Unsolved"
+        reason: "noInterface"
+      - module: "Lib.Uses"
+        reason: "noInterface"
+  module: "Lib"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    buildIndex: built
+    index:     built <time>
+    modules:   3 under Lib, 1 indexed, 0 stale, 2 unindexed, 0 unindexable
+>>> 3 findNames
+result:
+  checked: true
+  file: "Lib/Main.agda"
+  glob: false
+  hits:
+    - column: 1
+      file: "Lib/Unsolved.agda"
+      kind: "FunName"
+      line: 15
+      match: "exact"
+      module: "Lib.Unsolved"
+      name: "double"
+      rank: 1
+      type: "Nat → Nat"
+      uses: 0
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 5
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 1
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 3
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 2
+    unindexedModules:
+      - module: "Lib.Unsolved"
+        reason: "noInterface"
+      - module: "Lib.Uses"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 1
+  module: "Lib"
+  pattern: "double"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    findNames: 1 hit for "double"
+      Lib.Unsolved.double : Nat → Nat
+        FunName, exact, 0 uses -- Lib/Unsolved.agda:15,1
+    index:     built <time>
+    modules:   3 under Lib, 1 indexed, 0 stale, 2 unindexed, 0 unindexable
+  type: []
+>>> 4 findNames
+result:
+  checked: true
+  file: "Lib/Main.agda"
+  glob: false
+  hits:
+    - column: 1
+      file: "Lib/Main.agda"
+      kind: "FunName"
+      line: 7
+      match: "exact"
+      module: "Lib.Main"
+      name: "identity"
+      rank: 1
+      type: "Set → Set"
+      uses: 0
+  index:
+    agdaVersion: "<version>"
+    builtAt: "<time>"
+    definitions: 5
+    formatVersion: 3
+    includePaths:
+      - ""
+      - "<path>"
+    indexed: 1
+    location: "_build/<version>/agda/name-index.jsonl"
+    modified: 0
+    modifiedModules: []
+    modules: 3
+    removed: 0
+    scope: "Lib"
+    stale: 0
+    staleModules: []
+    unindexable: 0
+    unindexableModules: []
+    unindexed: 2
+    unindexedModules:
+      - module: "Lib.Unsolved"
+        reason: "noInterface"
+      - module: "Lib.Uses"
+        reason: "noInterface"
+  kinds: []
+  limit: 50
+  matched: 1
+  module: "Lib"
+  pattern: "identity"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    findNames: 1 hit for "identity"
+      Lib.Main.identity : Set → Set
+        FunName, exact, 0 uses -- Lib/Main.agda:7,1
+    index:     built <time>
+    modules:   3 under Lib, 1 indexed, 0 stale, 2 unindexed, 0 unindexable
+  type: []
+>>> 5 close
+result:
+  checked: true
+  closed: true
+  file: "Lib/Main.agda"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    session closed

@@ -1,0 +1,56 @@
+>>> 1 load
+error:
+  agdaCode: "NotInScope"
+  code: "agdaError"
+  message:
+    ExtendedLambda.agda:17.23-33: error: [NotInScope]
+    Not in scope:
+      nosuchname
+      at ExtendedLambda.agda:17.23-33
+    when scope checking nosuchname
+  range: ExtendedLambda.agda 17:23@560-17:33@570
+  related:
+    - message:
+        when scope checking nosuchname
+      range: ExtendedLambda.agda 17:23@560-17:33@570
+    - message:
+        (ScopeCheckDeclaration could not be printed: <internal error>)
+      range: ExtendedLambda.agda 17:5@542-18:24@594
+    - message:
+        when scope checking λ { zero → nosuchname ; (suc n) → n }
+      range: ExtendedLambda.agda 17:5@542-18:24@594
+    - message:
+        when scope checking the declaration
+          f = λ { zero → nosuchname ; (suc n) → n }
+      range: ExtendedLambda.agda 17:1@538-18:24@594
+    - message:
+        when scope checking the declaration
+          mutual
+            f : Nat → Nat
+            f = λ { zero → nosuchname ; (suc n) → n }
+      range: ExtendedLambda.agda 16:1@524-18:24@594
+>>> 2 status
+result:
+  agdaVersion: "<version>"
+  checked: false
+  file: "ExtendedLambda.agda"
+  goals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    agda:     <version>
+    file:     ExtendedLambda.agda
+    revision: 1
+    checked:  False
+    goals:    
+>>> 3 close
+result:
+  checked: false
+  closed: true
+  file: "ExtendedLambda.agda"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    session closed

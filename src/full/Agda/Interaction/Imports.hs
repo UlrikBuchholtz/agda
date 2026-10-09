@@ -63,7 +63,6 @@ import GHC.Conc
 
 import System.Directory (doesFileExist, removeFile)
 import System.FilePath  ( (</>) )
-import System.IO
 import System.IO.Error (isUserError, isFullError)
 
 import Agda.Benchmarking
@@ -98,7 +97,7 @@ import Agda.TypeChecking.Rewriting.NonLinPattern (getMatchables)
 import Agda.TypeChecking.MetaVars ( openMetasToPostulates )
 import Agda.TypeChecking.Monad.State as S
 import Agda.TypeChecking.Monad
-import Agda.TypeChecking.Serialise (decode, encodeFile, decodeInterface, deserializeHashes)
+import Agda.TypeChecking.Serialise (decode, encodeFile, decodeInterface, readInterfacePrefix)
 import Agda.TypeChecking.Primitive
 import Agda.TypeChecking.Pretty as P
 import Agda.TypeChecking.DeadCode
@@ -1721,12 +1720,9 @@ buildInterface src topLevel = do
 --   We do not need to check that the file exist because we only
 --   accept @InterfaceFile@ as an input and not arbitrary @AbsolutePath@!
 getInterfaceFileHashes :: InterfaceFile -> IO (Maybe (Hash, Hash))
-getInterfaceFileHashes fp = do
-  let ifile = filePath $ intFilePath fp
-  h    <- openBinaryFile ifile ReadMode
-  bstr <- B.hGetSome h (2 * hashSize)
-  hClose h
-  deserializeHashes bstr
+getInterfaceFileHashes fp =
+  fmap (\ (sourceHash, fullHash, _version) -> (sourceHash, fullHash)) <$>
+    readInterfacePrefix (intFilePath fp)
 
 moduleHash :: TopLevelModuleName -> TCM Hash
 moduleHash m = iFullHash <$> getNonMainInterface m Nothing

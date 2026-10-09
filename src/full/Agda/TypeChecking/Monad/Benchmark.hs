@@ -23,7 +23,7 @@ import Data.Monoid (Sum(..), getSum)
 import qualified Data.Text.Lazy as TL
 
 import Agda.Benchmarking
-import Agda.Interaction.Options.Types( optParallelChecking, Parallelism(..) )
+import Agda.Interaction.Options.Types( optAgentInteraction, optParallelChecking, Parallelism(..) )
 
 import Agda.TypeChecking.Monad.Base
 import Agda.TypeChecking.Monad.Debug
@@ -40,11 +40,21 @@ import Agda.Syntax.Common.Pretty
 import qualified Agda.Interaction.Options.ProfileOptions as Profile
 
 -- | When profile options are set or changed, we need to turn benchmarking on or off.
+--
+--   The agent frontend (@--interaction-agent@) bills definitions even
+--   when no profiling was asked for, so that a request that times out
+--   can say which definition it was checking.  That costs two clock
+--   readings per definition, and 'print' still goes by the profile
+--   options alone.
 updateBenchmarkingStatus :: TCM ()
 -- {-# SPECIALIZE updateBenchmarkingStatus :: TCM () #-}
 -- updateBenchmarkingStatus :: (HasOptions m, MonadBench a m) => m ()
-updateBenchmarkingStatus =
-  B.setBenchmarking =<< benchmarking
+updateBenchmarkingStatus = do
+  b     <- benchmarking
+  agent <- optAgentInteraction <$> commandLineOptions
+  B.setBenchmarking $ case b of
+    B.BenchmarkOff | agent -> B.BenchmarkSome isDefAccount
+    _                      -> b
 
 -- | Check whether benchmarking is activated.
 {-# SPECIALIZE benchmarking :: TCM (B.BenchmarkOn Phase) #-}

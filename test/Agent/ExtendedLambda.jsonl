@@ -1,0 +1,7 @@
+# The scope error is reported with its name and its range, and the one
+# frame of `related` that will not print says so in place of its
+# message, keeping the range that says which lambda it was.
+{"method":"load","params":{"file":"%FILE%"}}
+# The session survived it.
+{"method":"status"}
+{"method":"close"}

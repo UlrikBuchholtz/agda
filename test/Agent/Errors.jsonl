@@ -1,0 +1,14 @@
+# Protocol-level failures come back as structured errors and leave the
+# session usable.
+this is not json
+{"method":"load","params":{"file":"%FILE%"}}
+{"method":"nonesuch"}
+{"method":"goal","params":{"goal":42}}
+{"method":"goal"}
+{"method":"goal","params":{"goal":0,"normalise":"very"}}
+{"method":"check","params":{"goal":0,"expr":"not"}}
+{"method":"infer","params":{"expr":"undefined-name"}}
+# The session still answers correctly.
+{"method":"goals"}
+!unchanged
+{"method":"close"}

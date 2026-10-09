@@ -1,0 +1,261 @@
+>>> 1 load
+result:
+  checked: true
+  errors: []
+  file: "MutationErrors.agda"
+  goals:
+    - id: 0
+      range: MutationErrors.agda 19:7@334-19:11@338
+      type: "⊥"
+    - id: 1
+      range: MutationErrors.agda 22:7@354-22:11@358
+      type: "ℕ"
+    - id: 2
+      range: MutationErrors.agda 25:10@392-25:14@396
+      type: "n ≡ n"
+    - id: 3
+      range: MutationErrors.agda 28:9@416-28:13@420
+      type: "ℕ"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    4 goals
+    ?0 : ⊥
+    ?1 : ℕ
+    ?2 : n ≡ n
+    ?3 : ℕ
+  warnings: []
+>>> 2 give
+error:
+  agdaCode: "UnequalTypes"
+  code: "agdaError"
+  message:
+    MutationErrors.agda:19.7-11: error: [UnequalTypes]
+    The type
+      ℕ
+    is not a subtype of
+      ⊥
+    when checking that the expression zero has type ⊥
+  range: MutationErrors.agda 19:7@334-19:11@338
+  related:
+    - message:
+        when checking that the expression zero has type ⊥
+      range: MutationErrors.agda 19:7@334-19:11@338
+    - message:
+        when checking that the expression zero has type ⊥
+      range: MutationErrors.agda 19:7@334-19:11@338
+    - message:
+        when checking that the expression ? has type ⊥
+      range: MutationErrors.agda 19:7@334-19:11@338
+    - message:
+        when checking that the clause bad = ? has type ⊥
+      range: MutationErrors.agda 19:1@328-19:11@338
+    - message:
+        when checking the definition of bad
+      range: MutationErrors.agda 19:1@328-19:11@338
+>>> 3 give
+error:
+  code: "unknownGoal"
+  data:
+    goals:
+      - id: 0
+        range: MutationErrors.agda 19:7@334-19:11@338
+      - id: 1
+        range: MutationErrors.agda 22:7@354-22:11@358
+      - id: 2
+        range: MutationErrors.agda 25:10@392-25:14@396
+      - id: 3
+        range: MutationErrors.agda 28:9@416-28:13@420
+  message:
+    there is no goal ?9
+>>> 4 solve
+error:
+  code: "notApplicable"
+  message:
+    no goal has been solved by the type checker
+>>> 5 auto
+error:
+  code: "notApplicable"
+  message:
+    No solution found
+>>> 6 intro
+error:
+  code: "notApplicable"
+  data:
+    candidates:
+      - "zero"
+      - "suc"
+  message:
+    several constructors fit this goal; give one of them explicitly
+>>> 7 auto
+result:
+  applied: false
+  checked: true
+  edits: []
+  file: "MutationErrors.agda"
+  reloaded: false
+  resynced: false
+  revision: 1
+  solutions:
+    - "refl"
+  text:
+    Solutions:
+      0. refl
+>>> 8 give
+error:
+  code: "staleDocument"
+  data:
+    changedOnDisk: false
+    revision: 1
+  message:
+    the document is at revision 1, not 99
+! file unchanged
+>>> 9 give
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "zero"
+      oldText: "{!!}"
+      range: MutationErrors.agda 22:7@354-22:11@358
+  errors: []
+  file: "MutationErrors.agda"
+  goal:
+    id: 1
+    range: MutationErrors.agda 22:7@354-22:11@358
+  goals:
+    - id: 0
+      range: MutationErrors.agda 19:7@334-19:11@338
+      type: "⊥"
+    - id: 1
+      range: MutationErrors.agda 25:10@392-25:14@396
+      type: "n ≡ n"
+    - id: 2
+      range: MutationErrors.agda 28:9@416-28:13@420
+      type: "ℕ"
+  hiddenGoals: []
+  previousRevision: 1
+  reloaded: true
+  resynced: false
+  revision: 2
+  text:
+    give ?1 = zero
+    3 goals
+    ?0 : ⊥
+    ?1 : n ≡ n
+    ?2 : ℕ
+  warnings: []
+! source
+  -- Material for the ways a mutating method can decline to mutate: a
+  -- goal nothing fits, one several constructors fit, and one proof
+  -- search finds.
+  
+  module MutationErrors where
+  
+  infix 10 _≡_
+  
+  data ℕ : Set where
+    zero : ℕ
+    suc  : ℕ → ℕ
+  
+  data _≡_ {A : Set} (x : A) : A → Set where
+    refl : x ≡ x
+  
+  data ⊥ : Set where
+  
+  bad : ⊥
+  bad = {!!}
+  
+  two : ℕ
+  two = zero
+  
+  same : (n : ℕ) → n ≡ n
+  same n = {!!}
+  
+  three : ℕ
+  three = {!!}
+>>> 10 give
+error:
+  code: "staleDocument"
+  data:
+    changedOnDisk: false
+    revision: 2
+  message:
+    the document is at revision 2, not 1
+! edited
+>>> 11 intro
+error:
+  code: "unknownGoal"
+  data:
+    goals:
+      - id: 0
+        range: MutationErrors.agda 19:7@334-19:11@338
+      - id: 1
+        range: MutationErrors.agda 28:9@416-28:13@420
+  message:
+    there is no goal ?2
+>>> 12 auto
+result:
+  applied: true
+  checked: true
+  edits:
+    - newText: "zero"
+      oldText: "{!!}"
+      range: MutationErrors.agda 28:9@416-28:13@420
+  errors: []
+  file: "MutationErrors.agda"
+  goals:
+    - id: 0
+      range: MutationErrors.agda 19:7@334-19:11@338
+      type: "⊥"
+  hiddenGoals: []
+  previousRevision: 3
+  reloaded: true
+  resynced: false
+  revision: 4
+  text:
+    auto ?1 = zero
+    1 goal
+    ?0 : ⊥
+  warnings: []
+! source
+  -- Material for the ways a mutating method can decline to mutate: a
+  -- goal nothing fits, one several constructors fit, and one proof
+  -- search finds.
+  
+  module MutationErrors where
+  
+  infix 10 _≡_
+  
+  data ℕ : Set where
+    zero : ℕ
+    suc  : ℕ → ℕ
+  
+  data _≡_ {A : Set} (x : A) : A → Set where
+    refl : x ≡ x
+  
+  data ⊥ : Set where
+  
+  bad : ⊥
+  bad = {!!}
+  
+  two : ℕ
+  two = zero
+  
+  same : (n : ℕ) → n ≡ n
+  same n = refl
+  
+  three : ℕ
+  three = zero
+>>> 13 close
+result:
+  checked: true
+  closed: true
+  file: "MutationErrors.agda"
+  reloaded: false
+  resynced: false
+  revision: 4
+  text:
+    session closed

@@ -516,6 +516,7 @@ test : check-whitespace \
        build-fail-test \
        interaction-simple \
        interaction-custom \
+       agent-test \
        test-suite-covers-errors \
        test-suite-covers-warnings \
        user-manual-covers-options \
@@ -653,6 +654,11 @@ accept-interaction-simple :
 interaction-custom :
 	@$(call decorate, "Suite of interaction tests (custom)", \
 		$(MAKE) -C test/Interaction)
+
+.PHONY : agent-test ## Tests the agent interaction frontend and agda-client.
+agent-test :
+	@$(call decorate, "Suite of agent interface tests", \
+		AGDA_BIN=$(AGDA_BIN) AGDA_CLIENT=$(AGDA_CLIENT) $(AGDA_TESTS_BIN) $(AGDA_TESTS_OPTIONS) --regex-include all/Agent)
 
 .PHONY : interactive ##
 interactive :
@@ -886,6 +892,12 @@ test-suite-covers-errors :
 testing-emacs-mode:
 	@$(call decorate, "Testing the Emacs mode", \
 	  $(AGDA_BIN) --emacs-mode compile)
+
+.PHONY : emacs-mode-test ## Check that the Emacs name-index client agrees with Agda's.
+emacs-mode-test:
+	@$(call decorate, "Cross-checking the Emacs name-index client", \
+	  AGDA_BIN=$(AGDA_BIN) AGDA_CLIENT=$(AGDA_CLIENT) $(EMACS) --batch -Q \
+	    -L src/data/emacs-mode -l test/emacs-mode/cross-check.el)
 
 .PHONY : doc-test ## Install and run doctest for the Agda library.
 doc-test: install-doctest run-doctest

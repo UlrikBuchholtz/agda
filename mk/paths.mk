@@ -60,9 +60,17 @@ AGDA_BIN := $(abspath $(AGDA_BIN))
 AGDA_MODE ?= $(BUILD_DIR)/build/agda-mode/agda-mode
 AGDA_MODE := $(abspath $(AGDA_MODE))
 
+# AGDA_CLIENT can be set in the system environment.
+AGDA_CLIENT ?= $(BUILD_DIR)/build/agda-client/agda-client
+AGDA_CLIENT := $(abspath $(AGDA_CLIENT))
+
 # AGDA_TESTS_BIN can be set in the system environment.
 AGDA_TESTS_BIN ?= $(BUILD_DIR)/build/agda-tests/agda-tests
 AGDA_TESTS_BIN := $(abspath $(AGDA_TESTS_BIN))
+
+# The Emacs that byte-compiles the mode and runs its tests.
+# EMACS can be set in the system environment.
+EMACS ?= emacs
 
 # Location of the -fast binaries for v1-cabal
 

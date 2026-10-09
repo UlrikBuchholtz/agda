@@ -1,0 +1,37 @@
+# The project-wide name search.  This fixture project has no .agda-lib,
+# so it has no build directory to hold an index and there are no hits;
+# what the answer always carries is the coverage report -- which modules
+# an index would have to cover, which of them have moved since it was
+# last built, and which have never been checked here at all.
+{"method":"load","params":{"file":"%FILE%"}}
+# Scoped to this module, so that the counts do not depend on how many
+# modules Agda's own primitive library happens to have.
+#
+# The module has a hole, so it left no interface behind: it counts as
+# unindexed, which an index could not fix -- the answer is to check it.
+{"method":"findNames","params":{"pattern":"is-basis","module":"NameIndex"}}
+# The module prefix is a prefix on the module name, not a substring of
+# it: a scope that matches nothing scans nothing.
+{"method":"findNames","params":{"pattern":"is","module":"NoSuchModule"}}
+# Fill the hole, and the module acquires an interface: it stops being
+# unindexed and starts being stale, which is what a build would fix.
+!edit {!!} ==> B → Bool
+{"method":"reload"}
+{"method":"findNames","params":{"pattern":"is-basis","module":"NameIndex"}}
+# The whole request shape is accepted, so that a client written against
+# it keeps working: the module prefix, the kind filter, the type filter,
+# the limit, and showImplicit, which chooses between the two renderings
+# the index stores.
+{"method":"findNames","params":{"pattern":"basis","module":"NameIndex","glob":false,"type":"Bool","kinds":["FunName"],"limit":5},"showImplicit":true}
+# Globbing is opt-in, because Agda names contain `*`.
+{"method":"findNames","params":{"pattern":"is-*-for","module":"NameIndex","glob":true}}
+# A pattern of nothing but space is a bad request, not an empty answer.
+{"method":"findNames","params":{"pattern":"  ","module":"NameIndex"}}
+{"method":"findNames","params":{"pattern":"is","module":"NameIndex","limit":0}}
+{"method":"findNames","params":{"module":"NameIndex"}}
+# Building an index needs somewhere to put it, and this project has no
+# .agda-lib.  Saying so beats writing an index into the source tree.
+{"method":"buildIndex","params":{}}
+# Only the edit above may have touched the file.
+!unchanged
+{"method":"close"}

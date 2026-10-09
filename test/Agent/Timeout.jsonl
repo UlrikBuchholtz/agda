@@ -1,0 +1,11 @@
+# A request that does not terminate is aborted when its timeout
+# expires, and the session answers the next request correctly.
+{"method":"load","params":{"file":"%FILE%"}}
+{"method":"normalise","params":{"expr":"loop zero"},"timeoutMs":3000}
+{"method":"goal","params":{"goal":0}}
+{"method":"normalise","params":{"expr":"suc zero"}}
+# An abort with nothing running says so, and aborts nothing later.
+{"method":"abort"}
+{"method":"normalise","params":{"expr":"suc zero"}}
+!unchanged
+{"method":"close"}

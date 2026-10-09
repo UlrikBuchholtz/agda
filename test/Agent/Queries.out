@@ -1,0 +1,420 @@
+>>> 1 load
+result:
+  checked: true
+  errors: []
+  file: "Queries.agda"
+  goals:
+    - id: 0
+      range: Queries.agda 28:11@449-28:15@453
+      type: "double n ≡ n + n"
+  hiddenGoals: []
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    1 goal
+    ?0 : double n ≡ n + n
+  warnings: []
+>>> 2 checkCandidates
+result:
+  candidates:
+    - accepted: true
+      elaborated: "refl"
+      expr: "refl"
+    - accepted: false
+      error:
+        code: "UnequalTypes"
+        message:
+          Queries.agda:28.11-15: error: [UnequalTypes]
+          The type
+            ℕ
+          is not a subtype of
+            double n ≡ n + n
+          when checking that the expression zero has type double n ≡ n + n
+        range: Queries.agda 28:11@449-28:15@453
+        related:
+          - message:
+              when checking that the expression zero has type double n ≡ n + n
+            range: Queries.agda 28:11@449-28:15@453
+          - message:
+              when checking that the expression ? has type double n ≡ n + n
+            range: Queries.agda 28:11@449-28:15@453
+          - message:
+              when checking that the clause lemma n = ? has type
+              (n : ℕ) → double n ≡ n + n
+            range: Queries.agda 28:1@439-28:15@453
+          - message:
+              when checking the definition of lemma
+            range: Queries.agda 28:1@439-28:15@453
+        severity: "error"
+      expr: "zero"
+    - accepted: false
+      error:
+        code: "UnequalTypes"
+        message:
+          Queries.agda:28.11-12: error: [UnequalTypes]
+          The type
+            ℕ
+          is not a subtype of
+            double n ≡ n + n
+          when checking that the expression n has type double n ≡ n + n
+        range: Queries.agda 28:11@449-28:12@450
+        related:
+          - message:
+              when checking that the expression n has type double n ≡ n + n
+            range: Queries.agda 28:11@449-28:12@450
+          - message:
+              when checking that the expression ? has type double n ≡ n + n
+            range: Queries.agda 28:11@449-28:15@453
+          - message:
+              when checking that the clause lemma n = ? has type
+              (n : ℕ) → double n ≡ n + n
+            range: Queries.agda 28:1@439-28:15@453
+          - message:
+              when checking the definition of lemma
+            range: Queries.agda 28:1@439-28:15@453
+        severity: "error"
+      expr: "n"
+  checked: true
+  file: "Queries.agda"
+  goal:
+    id: 0
+    range: Queries.agda 28:11@449-28:15@453
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    1 of 3 accepted
+    accepted: refl
+    rejected: zero
+      Queries.agda:28.11-15: error: [UnequalTypes]
+      The type
+        ℕ
+      is not a subtype of
+        double n ≡ n + n
+      when checking that the expression zero has type double n ≡ n + n
+    rejected: n
+      Queries.agda:28.11-12: error: [UnequalTypes]
+      The type
+        ℕ
+      is not a subtype of
+        double n ≡ n + n
+      when checking that the expression n has type double n ≡ n + n
+>>> 3 goal
+result:
+  boundary: []
+  checked: true
+  constraints: []
+  context:
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "unrestricted"
+        relevance: "relevant"
+      name: "n"
+      originalName: "n"
+      type: "ℕ"
+      value: null
+  file: "Queries.agda"
+  goal:
+    id: 0
+    range: Queries.agda 28:11@449-28:15@453
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    Goal: double n ≡ n + n
+    ———— Context ———————————————————————————————————————————————
+    n : ℕ
+  type: "double n ≡ n + n"
+>>> 4 checkCandidates
+error:
+  code: "invalidParams"
+  message:
+    exprs must not be empty
+>>> 5 helperType
+result:
+  checked: true
+  file: "Queries.agda"
+  goal:
+    id: 0
+    range: Queries.agda 28:11@449-28:15@453
+  reloaded: false
+  resynced: false
+  revision: 1
+  signature: "helper : ∀ n → double n ≡ n + n"
+  text:
+    helper : ∀ n → double n ≡ n + n
+>>> 6 search
+result:
+  checked: true
+  file: "Queries.agda"
+  reloaded: false
+  results:
+    - name: "lemma"
+      type: "(n : ℕ) → double n ≡ n + n"
+    - name: "refl"
+      type: "{A : Set} {x : A} → x ≡ x"
+  resynced: false
+  revision: 1
+  searched:
+    - "_≡_"
+  text:
+    Definitions about _≡_
+      lemma : (n : ℕ) → double n ≡ n + n
+      refl  : {A : Set} {x : A} → x ≡ x
+>>> 7 search
+error:
+  code: "invalidParams"
+  message:
+    names must not be empty; search takes space separated identifiers
+>>> 8 moduleContents
+result:
+  checked: true
+  file: "Queries.agda"
+  module: "Nested"
+  modules: []
+  names:
+    - name: "double"
+      type: "ℕ → ℕ"
+  reloaded: false
+  resynced: false
+  revision: 1
+  scope: "topLevel"
+  text:
+    Modules
+    Names
+      double : ℕ → ℕ
+>>> 9 moduleContents
+result:
+  checked: true
+  file: "Queries.agda"
+  goal:
+    id: 0
+    range: Queries.agda 28:11@449-28:15@453
+  module: "Nested"
+  modules: []
+  names:
+    - name: "double"
+      type: "ℕ → ℕ"
+  reloaded: false
+  resynced: false
+  revision: 1
+  scope: "goal"
+  text:
+    Modules
+    Names
+      double : ℕ → ℕ
+>>> 10 whyInScope
+result:
+  checked: true
+  definitions:
+    - kind: "FunName"
+      name: "Queries.Nested.double"
+      range: Queries.agda 19:3@297-19:9@303
+  file: "Queries.agda"
+  local: false
+  modules: []
+  name: "double"
+  reloaded: false
+  resynced: false
+  revision: 1
+  scope: "topLevel"
+  text:
+    double is in scope as
+      * a defined name Queries.Nested.double brought into scope by
+        - the opening of Nested at Queries.agda:22.6-12
+        - its definition at Queries.agda:19.3-9
+>>> 11 whyInScope
+result:
+  checked: true
+  definitions:
+    - kind: "FunName"
+      name: "Queries._+_"
+      range: Queries.agda 13:1@219-13:4@222
+  file: "Queries.agda"
+  goal:
+    id: 0
+    range: Queries.agda 28:11@449-28:15@453
+  local: false
+  modules: []
+  name: "_+_"
+  reloaded: false
+  resynced: false
+  revision: 1
+  scope: "goal"
+  text:
+    _+_ is in scope as
+      * a defined name Queries._+_ brought into scope by
+        - its definition at Queries.agda:13.1-4
+>>> 12 whyInScope
+result:
+  checked: true
+  definitions: []
+  file: "Queries.agda"
+  local: false
+  modules: []
+  name: "nowhere"
+  reloaded: false
+  resynced: false
+  revision: 1
+  scope: "topLevel"
+  text:
+    nowhere is not in scope.
+>>> 13 definitionAt
+result:
+  checked: true
+  file: "Queries.agda"
+  position: 27:19@422
+  reloaded: false
+  resynced: false
+  revision: 1
+  site:
+    anchor: "Nested.double"
+    col: 3
+    file: "Queries.agda"
+    line: 19
+    module: "Queries"
+    offset: 297
+  symbol:
+    kind: "function"
+    note: null
+    range: Queries.agda 27:19@422-27:25@428
+    text:
+      double
+  text:
+    double (function)
+    defined at Queries.agda:19,3
+>>> 14 definitionAt
+result:
+  checked: true
+  file: "Queries.agda"
+  position: 28:1@439
+  reloaded: false
+  resynced: false
+  revision: 1
+  site:
+    anchor: "lemma"
+    col: 1
+    file: "Queries.agda"
+    line: 27
+    module: "Queries"
+    offset: 404
+  symbol:
+    kind: "function"
+    note: null
+    range: Queries.agda 28:1@439-28:6@444
+    text:
+      lemma
+  text:
+    lemma (function)
+    defined at Queries.agda:27,1
+>>> 15 definitionAt
+result:
+  checked: true
+  file: "Queries.agda"
+  position: 15:13@261
+  reloaded: false
+  resynced: false
+  revision: 1
+  site:
+    anchor: "ℕ.suc"
+    col: 3
+    file: "Queries.agda"
+    line: 11
+    module: "Queries"
+    offset: 205
+  symbol:
+    kind: "inductiveConstructor"
+    note: null
+    range: Queries.agda 15:13@261-15:16@264
+    text:
+      suc
+  text:
+    suc (inductiveConstructor)
+    defined at Queries.agda:11,3
+>>> 16 definitionAt
+result:
+  checked: true
+  file: "Queries.agda"
+  position: 26:1@403
+  reloaded: false
+  resynced: false
+  revision: 1
+  site: null
+  symbol: null
+  text:
+    nothing at line 26, column 1
+>>> 17 definitionAt
+error:
+  code: "invalidParams"
+  message:
+    there is no line 99, column 1 in Queries.agda
+>>> 18 goal
+result:
+  boundary: []
+  checked: true
+  constraints: []
+  context:
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "unrestricted"
+        relevance: "relevant"
+      name: "n"
+      originalName: "n"
+      type: "ℕ"
+      value: null
+  file: "Queries.agda"
+  goal:
+    id: 0
+    range: Queries.agda 28:11@449-28:15@453
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    Goal: _≡_ {ℕ} (double n) (n + n)
+    ———— Context ———————————————————————————————————————————————
+    n : ℕ
+  type: "_≡_ {ℕ} (double n) (n + n)"
+>>> 19 goal
+result:
+  boundary: []
+  checked: true
+  constraints: []
+  context:
+    - inScope: true
+      modality:
+        cohesion: "continuous"
+        hiding: "visible"
+        quantity: "unrestricted"
+        relevance: "relevant"
+      name: "n"
+      originalName: "n"
+      type: "ℕ"
+      value: null
+  file: "Queries.agda"
+  goal:
+    id: 0
+    range: Queries.agda 28:11@449-28:15@453
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    Goal: double n ≡ n + n
+    ———— Context ———————————————————————————————————————————————
+    n : ℕ
+  type: "double n ≡ n + n"
+! file unchanged
+>>> 20 close
+result:
+  checked: true
+  closed: true
+  file: "Queries.agda"
+  reloaded: false
+  resynced: false
+  revision: 1
+  text:
+    session closed

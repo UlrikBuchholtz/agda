@@ -399,6 +399,17 @@ jobs:
       # 2m 39s (2022-06-17)
       # This test has erratic outages (#5619), so we place it late in the queue.
 
+    - name: "Suite of agent interface tests"
+      run: make agent-test
+      if: always() # run test even if a previous test failed
+
+    - name: "Cross-check of the Emacs name-index client"
+      run: make emacs-mode-test
+      if: always() # run test even if a previous test failed
+      # The matching and ranking in agda2-name-index.el are a second
+      # implementation of the specification Agda.Interaction.NameIndex
+      # implements; this replays the same queries through both.
+
   # Step 2d: testing the cubical library
   ###########################################################################
 

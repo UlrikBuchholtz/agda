@@ -1,0 +1,24 @@
+# The vertical slice: load, list goals, inspect one, check a candidate,
+# infer and normalise, both goal-scoped and at the top level.
+{"method":"handshake"}
+{"method":"load","params":{"file":"%FILE%"}}
+{"method":"goals"}
+{"method":"goal","params":{"goal":0}}
+{"method":"context","params":{"goal":0}}
+# A goal can also be addressed by a position inside it, which survives
+# the renumbering that follows an edit.
+{"method":"goal","params":{"goal":{"line":25,"col":17}}}
+{"method":"check","params":{"goal":0,"expr":"cong suc (+-idʳ n)"}}
+# A rejected candidate is a result, not a failed request, ...
+{"method":"check","params":{"goal":0,"expr":"refl"}}
+# ... and the goal is still usable afterwards.
+{"method":"goal","params":{"goal":0}}
+{"method":"infer","params":{"goal":0,"expr":"+-idʳ n"}}
+{"method":"infer","params":{"expr":"suc zero"}}
+{"method":"normalise","params":{"goal":0,"expr":"suc n + zero"}}
+{"method":"normalise","params":{"expr":"suc zero + suc zero"}}
+{"method":"constraints"}
+{"method":"status"}
+# Nothing above may have written to the file.
+!unchanged
+{"method":"close"}

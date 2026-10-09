@@ -234,6 +234,12 @@ jobs:
     - if: always()
       name: Suite of interaction tests
       run: make interaction
+    - if: always()
+      name: Suite of agent interface tests
+      run: make agent-test
+    - if: always()
+      name: Cross-check of the Emacs name-index client
+      run: make emacs-mode-test
   stdlib-test:
     needs: build
     runs-on: ubuntu-26.04

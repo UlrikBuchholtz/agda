@@ -23,6 +23,36 @@ Pragmas and options
 * New option `--print-options` to print a simple list of all options.
   This list can e.g. be used to implement bash completion.
 
+* New mode `--build-name-index` writes a *name index* of every module
+  the project in the current directory could write an `import` for: its
+  own include directories plus the transitive `depend:` closure of its
+  `.agda-lib`.  Per public definition the index records the name, its
+  kind, its module, the line and column it is defined at, its type
+  rendered twice (with implicit arguments hidden and shown), the names
+  its type mentions, and how many indexed definitions mention it.
+
+  It is written to `_build/<version>/agda/name-index.jsonl`, beside the
+  interfaces it is derived from.  A module whose interface is current
+  is read from it; any other module is type-checked, including one that
+  nothing has imported yet, so indexing a dependency that has never been
+  checked costs checking all of it.  On a thousand-module library whose
+  interfaces are current the first build is about a minute.
+
+  Every build after that is a refresh: `--build-name-index` re-renders
+  only the modules whose interfaces have moved since the index was built
+  and keeps the rest, which after an ordinary edit takes a second or
+  two.  `--build-name-index=full` re-renders everything.
+
+  The index is what the agent interface's `findNames` method answers
+  from, and its format is public — nothing at query time needs a type
+  checker, so a client in another language can read the file directly.
+  See [the documentation](https://agda.readthedocs.io/en/v2.9.0/tools/agent-interface.html#the-index-file).
+
+* New mode `--name-index-status` prints, as one line of JSON, where the
+  current project's name index is and what it covers, and exits.  It is
+  how a client that reads the index file itself finds it, rather than
+  re-deriving the build-directory layout.
+
 * The flavor of Cubical Agda can now be chosen by an argument to the `--cubical` option:
 
   | Old                    | New                                               |
@@ -686,6 +716,93 @@ Library management
 Interaction and emacs mode
 --------------------------
 
+* New frontend `--interaction-agent` and a new executable `agda-client`:
+  an interface for driving a proof session from the terminal or from
+  a program.
+
+  `agda --interaction-agent` speaks a JSON-lines request/response
+  protocol over stdio.  Every request carries an `id` and is answered by
+  exactly one terminal line, so no prompt sniffing or response
+  aggregation is needed; any request may carry a `timeoutMs`, after
+  which it is aborted and the session stays usable; and a query against
+  a file that changed on disk reloads it transparently instead of
+  failing, so the file can be edited with other tools between commands.
+  A query against a file that has *not* changed since a load that
+  failed answers with that load's error rather than checking the file
+  again.
+
+  `agda-client` is a one-shot command line client for that protocol.  It
+  keeps a per-project Agda session alive behind a Unix socket, so type
+  checking is not repeated between invocations:
+
+  ```
+  $ agda-client load Sorting.agda
+  $ agda-client goal 0
+  $ agda-client check 0 'insert-sorted x xs'
+  ```
+
+  Queries: `load`, `reload`, `goals`, `goal`, `context`, `check`,
+  `candidates` (check several expressions against one goal in a single
+  request), `infer`, `normalise`, `constraints`, `helper`, `search`,
+  `module-contents`, `why` (why a name is in scope), `definition`
+  (where the name at a source position is defined), `status`, `abort`
+  and `close`.  Any request may ask for implicit or irrelevant
+  arguments to be printed, for that request only.
+
+  `load --profile[=OPTION]` checks the file from source with Agda's
+  `--profile=OPTION` (default `definitions`) for that one load, and
+  lists the CPU time per definition.  A request that times out names
+  the definition it was checking, and lists the slowest ones so far.
+
+  Proof steps: `give`, `elaborate`, `refine`, `intro`, `case`, `solve`
+  and `auto`.  These rewrite the file on disk: Agda turns the result
+  into a replacement for the goal's range, checks that the range holds a
+  hole and that the file did not change while the command ran, writes
+  the new source atomically, reloads, and returns the applied edits
+  together with the goals of the new revision.  Nothing is written when
+  the command fails.
+
+  Case splitting replaces the whole clause the goal is in.  The range of
+  that clause is now part of the `Resp_MakeCase` response (and of the
+  `MakeCase` response of `--interaction-json`), so a frontend that owns
+  the source no longer has to reconstruct it by scanning: clauses spread
+  over several lines, and single clauses of an inline `λ { … ; … }`,
+  are handled as well as one-line function clauses.
+
+  Errors and warnings are reported as objects carrying Agda's own name
+  for them (`UnequalTypes`, `UnreachableClauses`, …), a range, and the
+  chain of calls they were raised under, alongside Agda's rendering;
+  context entries report their modality.
+
+  A `findNames` method (the `find` verb) searches *names* across every
+  module the project could write an `import` for, rather than types in
+  the scope of the loaded file as `search` does.  Hits are ranked by how
+  the pattern matched — the whole name, a prefix of it, a whole hyphen-
+  or underscore-separated component, a substring, or (asking about types
+  as well) a name the type mentions — with ties broken by how many
+  indexed definitions mention the hit and then by where it lives, the
+  project's own modules before its libraries' and Agda's builtins last,
+  and each carries the name's kind,
+  module, type, and the file, line and column it is defined at.  They
+  can be filtered by module prefix, by kind and by what the type
+  mentions, and `*` and `?` are read as wildcards on request.
+
+  The hits come from the index that `--build-name-index` writes beside
+  the interface files; a `buildIndex` method (the `index` verb) builds
+  it in a process of its own and relays its progress.  Every answer
+  carries an `index` object saying what it covered: how many modules an
+  index would have to span, how many of those have been checked but no
+  longer match what the index recorded, how many have never been checked
+  here and so are not in it until a build checks them, how many the
+  builder could not read at all, and how many have been edited since they were checked — the index
+  describes those as they were checked, which no build changes until
+  Agda checks them again.  Working that out costs a stat and
+  twenty-four bytes per module — the uncompressed prefix of an interface
+  file — so a query over a library that has never been checked says so
+  rather than looking like a library with nothing in it.
+
+  See [the documentation](https://agda.readthedocs.io/en/v2.9.0/tools/agent-interface.html).
+
 * The JSON interaction protocol (`--interaction-json`) no longer loses
   information that the Emacs frontend displays:
 
@@ -783,6 +900,34 @@ Interaction and emacs mode
   commands `Cmd_compute(_toplevel)` (`C-u C-c C-n` in Emacs)
   regardless of whether invoked at toplevel or in a hole
   (Issue [#2410](https://github.com/agda/agda/issue/2410)).
+
+* New Emacs command `agda2-find-name` (`C-c C-g`): find a name anywhere
+  the project could write an `import` for, rather than in the scope of
+  the file being edited, which is what `Search About` (`C-c C-z`) and
+  `Module contents` (`C-c C-o`) do.
+
+  It prompts for a pattern, defaulting to the name at point, and offers
+  the matches ranked — the whole name, a prefix of it, a whole hyphen-
+  or underscore-separated component, a substring — each shown with its
+  kind, its module and its type, so that `is-basis` and `is-basis-for`
+  can be told apart without opening either file.  `PATTERN in MODULE`
+  restricts the search to a module prefix.  Choosing a hit inserts its
+  name; `agda2-name-index-default-action` changes that to jumping to
+  the definition or inserting an `open import`, and `C-u C-c C-g` asks
+  which to do this time.  While the candidates are showing, `M-i`
+  switches the types shown beside them between the two renderings the
+  index stores, with and without implicit arguments, for the search in
+  progress; `M-.` jumps to the candidate and `M-RET` inserts the `open
+  import` for it, whatever the default action is.
+
+  The search never talks to the Agda process: it reads the name index
+  that `--build-name-index` writes, in which every type has already
+  been rendered to text, so it answers while Agda is busy checking
+  something else — which is when one goes looking for a name one has
+  not got.  `C-c C-u` builds that index and afterwards refreshes it.
+  The same file answers the agent interface's `findNames`, and the two
+  clients are held to the same ranking by a cross-check (`make
+  emacs-mode-test`).
 
 * _Go-to-definition_ (`M-.`) is now implemented using Emacs' built-in
   [Xref].  Basic usage stays the same (`M-.` or using the mouse), but

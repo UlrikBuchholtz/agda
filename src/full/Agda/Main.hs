@@ -36,8 +36,10 @@ import Agda.Interaction.Options.BashCompletion (bashComplete, printedOptions)
 import Agda.Interaction.Options.Help (Help (..), helpTopicUsage)
 import Agda.Interaction.EmacsTop (mimicGHCi)
 import Agda.Interaction.JSONTop (jsonREPL)
+import Agda.Interaction.Agent.Top (agentREPL)
 import Agda.Interaction.FindFile ( SourceFile(SourceFile) )
 import Agda.Interaction.Imports qualified as Imp
+import Agda.Interaction.NameIndex (buildNameIndex, nameIndexStatus)
 
 import Agda.TypeChecking.Monad
 import Agda.TypeChecking.Errors
@@ -155,9 +157,10 @@ runAgdaArgs backends args = do
             -- use UTF-8 when writing to stdout (and when reading from
             -- stdin).
             if optGHCiInteraction opts || optJSONInteraction opts
+                 || optAgentInteraction opts
             then optionError $
                    "The option --transliterate must not be combined with " ++
-                   "--interaction or --interaction-json"
+                   "--interaction, --interaction-json or --interaction-agent"
             else do
               -- Transliterate unsupported code points.
               enc <- IO.mkTextEncoding (show IO.localeEncoding ++ "//TRANSLIT")
@@ -180,17 +183,23 @@ type Interactor a
 -- | Major mode of operation, not including the standard mode (checking the given main module).
 data FrontendType
   = FrontEndInteraction InteractionFormat
-      -- ^ @--interaction@ or @--interaction-json@.
+      -- ^ @--interaction@, @--interaction-json@ or @--interaction-agent@.
   | FrontEndRepl
       -- ^ @--interactive@.
   | FrontEndBuildLibrary
       -- ^ @--build-library@.
+  | FrontEndBuildNameIndex NameIndexBuild
+      -- ^ @--build-name-index@.
+  | FrontEndNameIndexStatus
+      -- ^ @--name-index-status@.
 
 data InteractionFormat
   = InteractionEmacs
       -- ^ @--interaction@.
   | InteractionJson
       -- ^ @--interaction-json@.
+  | InteractionAgent
+      -- ^ @--interaction-agent@.
 
 pattern FrontEndEmacs :: FrontendType
 pattern FrontEndEmacs = FrontEndInteraction InteractionEmacs
@@ -198,15 +207,32 @@ pattern FrontEndEmacs = FrontEndInteraction InteractionEmacs
 pattern FrontEndJson :: FrontendType
 pattern FrontEndJson  = FrontEndInteraction InteractionJson
 
-{-# COMPLETE FrontEndBuildLibrary, FrontEndEmacs, FrontEndJson, FrontEndRepl #-}
+pattern FrontEndAgent :: FrontendType
+pattern FrontEndAgent = FrontEndInteraction InteractionAgent
+
+{-# COMPLETE FrontEndBuildLibrary, FrontEndBuildNameIndex, FrontEndNameIndexStatus, FrontEndEmacs, FrontEndJson, FrontEndAgent, FrontEndRepl #-}
 
 buildLibraryInteractor :: Interactor ()
 buildLibraryInteractor setup _check = do setup; buildLibrary
+
+-- | Name-index mode.  Like @--build-library@ it takes no input file and
+--   works from the @.agda-lib@ in the current directory, but it loads
+--   the include path rather than checking it, and it exits having
+--   written one file.
+buildNameIndexInteractor :: NameIndexBuild -> Interactor ()
+buildNameIndexInteractor mode setup _check = do setup; buildNameIndex mode
+
+-- | The same include path, reported rather than indexed: where the
+--   index is and what it covers, for the clients that read the file
+--   themselves instead of asking the daemon.
+nameIndexStatusInteractor :: Interactor ()
+nameIndexStatusInteractor setup _check = do setup; nameIndexStatus
 
 -- | Emacs/JSON mode. Note that it ignores the "check" action because it calls typeCheck directly.
 interactionInteractor :: InteractionFormat -> Interactor ()
 interactionInteractor InteractionEmacs setup _check = mimicGHCi setup
 interactionInteractor InteractionJson  setup _check = jsonREPL  setup
+interactionInteractor InteractionAgent setup _check = agentREPL setup
 
 -- | The (deprecated) repl mode.
 replInteractor :: Maybe AbsolutePath -> Interactor ()
@@ -251,6 +277,17 @@ getInteractor configuredBackends maybeInputFile opts = do
             throwError "--build-library cannot be combined with --no-libraries"
           noInputFile fe
           return $ Just buildLibraryInteractor
+        -- --build-name-index
+        FrontEndBuildNameIndex mode -> do
+          noBackends fe
+          notJustScopeChecking fe
+          noInputFile fe
+          return $ Just $ buildNameIndexInteractor mode
+        -- --name-index-status
+        FrontEndNameIndexStatus -> do
+          noBackends fe
+          noInputFile fe
+          return $ Just nameIndexStatusInteractor
   where
     -- NOTE: The notion of a backend being "enabled" *just* refers to this top-level interaction mode selection. The
     -- interaction/interactive front-ends may still invoke available backends even if they are not "enabled".
@@ -260,7 +297,10 @@ getInteractor configuredBackends maybeInputFile opts = do
       [ [ FrontEndRepl  | optInteractive     opts ]
       , [ FrontEndEmacs | optGHCiInteraction opts ]
       , [ FrontEndJson  | optJSONInteraction opts ]
+      , [ FrontEndAgent | optAgentInteraction opts ]
       , [ FrontEndBuildLibrary | optBuildLibrary opts ]
+      , [ FrontEndBuildNameIndex mode | Just mode <- [optBuildNameIndex opts] ]
+      , [ FrontEndNameIndexStatus | optNameIndexStatus opts ]
       ]
     -- Constructs messages like "(no backend)", "backend ghc", "backends (ghc, ocaml)"
     pluralize w []  = concat ["(no ", w, ")"]
@@ -271,8 +311,11 @@ getInteractor configuredBackends maybeInputFile opts = do
     frontendFlagName = ("--" ++) . \case
       FrontEndEmacs -> "interaction"
       FrontEndJson -> "interaction-json"
+      FrontEndAgent -> "interaction-agent"
       FrontEndRepl -> "interactive"
       FrontEndBuildLibrary -> "build-library"
+      FrontEndBuildNameIndex{} -> "build-name-index"
+      FrontEndNameIndexStatus -> "name-index-status"
     noBackends fe = unless (null enabledBackends) $
       throwError $ concat ["Cannot mix ", frontendFlagName fe, " with ", enabledBackendNames]
     noInputFile fe = whenJust maybeInputFile \ inputFile -> errorFrontendFileDisallowed inputFile fe
