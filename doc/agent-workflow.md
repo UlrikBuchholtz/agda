@@ -166,9 +166,17 @@ got.
 ## When something hangs
 
 Every request has a timeout (`-t SECS`, `--no-timeout` to remove it) and
-`agda-client abort` interrupts the running one.  The session survives
-both.  `agda-client status` says what is loaded; `agda-client stop` shuts
-the daemon down and the next command starts a fresh one.
+`agda-client abort` interrupts the running one, and cancels any requests
+queued behind it.  The session survives both.  `agda-client status`
+answers at once even while Agda is busy, and then says what is running,
+for how long, and which definition is being checked:
+
+```
+running:  load …/Slow.agda (12034 ms), checking Slow.test (11876 ms of CPU time)
+```
+
+`agda-client stop` shuts the daemon down and the next command starts a
+fresh one.
 
 A `load` that times out names the definition it was checking and lists
 the slowest definitions so far:

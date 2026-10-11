@@ -304,8 +304,8 @@ clientTestFilter :: [RegexFilter]
 clientTestFilter = [ RFInclude "Agent/agda-client" ]
 
 -- | A smoke test for @agda-client@: cold start with Agda's own flags in
---   @load@'s tail, warm reuse, an abort that has to reach the daemon
---   while it is busy, shutdown, and no writes to the source.
+--   @load@'s tail, warm reuse, a status and an abort that have to be
+--   answered while Agda is busy, shutdown, and no writes to the source.
 --
 --   The client is the one @AGDA_CLIENT@ names, else the one beside
 --   @agda@ (where an installation puts it; a build directory does not).
@@ -363,9 +363,22 @@ clientTest agda = testCase "agda-client" $ do
     _ <- forkIO $ putMVar running =<<
            run [ "-t", "30", "normalise", "loop zero" ]
     threadDelay 2000000
-    (_, out4, err4) <- run [ "abort" ]
+    -- A request queued behind it, which the abort is to cancel rather
+    -- than leave to start once the diverging one is gone.
+    queued <- newEmptyMVar
+    _ <- forkIO $ putMVar queued =<< run [ "-t", "30", "goals" ]
+    threadDelay 1000000
+    -- `status` is answered while Agda is busy, not after it.
+    (_, outS, errS) <- run [ "-t", "10", "status" ]
+    assertBool ("status did not answer a busy session:\n" ++ outS ++ errS) $
+      "running:  normalise" `isInfixOf` outS && "queued:   1" `isInfixOf` outS
+    (_, out4, err4) <- run [ "-t", "10", "abort" ]
     assertBool ("abort did not reach a busy daemon:\n" ++ out4 ++ err4) $
-      "aborted" `isInfixOf` (out4 ++ err4)
+      "aborted the running command and cancelled 1 queued request"
+        `isInfixOf` (out4 ++ err4)
+    (_, outQ, errQ) <- takeMVar queued
+    assertBool ("the queued request was not cancelled:\n" ++ outQ ++ errQ) $
+      "cancelled by an abort" `isInfixOf` (outQ ++ errQ)
     -- Not merely "aborted": a daemon that serves one connection at a
     -- time would let the request run into its own timeout instead, and
     -- that failure also says the command was aborted.

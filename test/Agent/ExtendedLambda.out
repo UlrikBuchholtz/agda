@@ -35,14 +35,17 @@ result:
   checked: false
   file: "ExtendedLambda.agda"
   goals: []
+  queued: 0
   reloaded: false
   resynced: false
   revision: 1
+  running: null
   text:
     agda:     <version>
     file:     ExtendedLambda.agda
     revision: 1
     checked:  False
+    running:  nothing
     goals:    
 >>> 3 close
 result:

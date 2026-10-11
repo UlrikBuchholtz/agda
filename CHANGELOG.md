@@ -724,7 +724,9 @@ Interaction and emacs mode
   protocol over stdio.  Every request carries an `id` and is answered by
   exactly one terminal line, so no prompt sniffing or response
   aggregation is needed; any request may carry a `timeoutMs`, after
-  which it is aborted and the session stays usable; and a query against
+  which it is aborted and the session stays usable; `status` and `abort`
+  are answered at once even while a command runs (`status` then names
+  the definition being checked); and a query against
   a file that changed on disk reloads it transparently instead of
   failing, so the file can be edited with other tools between commands.
   A query against a file that has *not* changed since a load that

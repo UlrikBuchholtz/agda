@@ -380,14 +380,17 @@ result:
   goals:
     - id: 0
       range: Basics.agda 25:17@493-25:21@497
+  queued: 0
   reloaded: false
   resynced: false
   revision: 1
+  running: null
   text:
     agda:     <version>
     file:     Basics.agda
     revision: 1
     checked:  True
+    running:  nothing
     goals:    ?0
 ! file unchanged
 >>> 16 close

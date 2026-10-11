@@ -54,6 +54,8 @@ import Data.Text.Encoding qualified as T
 import Data.Text.Lazy qualified as TL
 import Data.Word                   ( Word32 )
 
+import GHC.Clock                   ( getMonotonicTime )
+
 import System.Directory            ( getCurrentDirectory, removeFile )
 import System.Environment          ( getArgs, getExecutablePath )
 import System.Exit                 ( ExitCode(..) )
@@ -181,13 +183,30 @@ data AgentEnv = AgentEnv
   , envCurrentId :: IORef Value
       -- ^ Id of the request in flight, for progress events.
   , envOutLock   :: MVar ()
+  , envPending   :: TVar Int
+      -- ^ Requests handed to the main loop and not yet answered.
+      --   While there are any, @status@ is answered by the reader
+      --   thread instead of joining the queue (see 'busyStatus').
+  , envServing   :: TVar (Maybe Serving)
+      -- ^ The request the main loop is answering, if any.
+  , envPosted    :: TVar Integer
+      -- ^ Number of the last request handed to the main loop.
+  , envCancelled :: TVar Integer
+      -- ^ Requests up to this number that the main loop has not started
+      --   on yet were cancelled by an @abort@.
+  }
+
+-- | A request the main loop has started on.
+data Serving = Serving
+  { servRequest :: AgentRequest
+  , servSince   :: Double
+      -- ^ When it started, by 'getMonotonicTime'.
   }
 
 -- | A line read from stdin.
 data Incoming
-  = Incoming AgentRequest Bool
-      -- ^ The 'Bool' says, for an @abort@, whether a command was
-      --   running when it was read, and so whether it aborted one.
+  = Incoming AgentRequest Integer
+      -- ^ Numbered as in 'envPosted'.
   | Malformed String
   | EndOfInput
 
@@ -216,6 +235,10 @@ agentREPL setup = do
     <*> newTVarIO False
     <*> newIORef Null
     <*> newMVar ()
+    <*> newTVarIO 0
+    <*> newTVarIO Nothing
+    <*> newTVarIO 0
+    <*> newTVarIO 0
 
   setInteractionOutputCallback (agentCallback env)
   _ <- liftIO $ forkIO $ readRequests env queue
@@ -254,8 +277,10 @@ emit env v = withMVar (envOutLock env) $ \ () -> do
 
 -- | Read request lines from stdin.
 --
---   @abort@ is acted upon here rather than in the main loop, since the
---   main loop is busy running the command that is to be aborted.
+--   @abort@ is acted upon and answered here rather than in the main
+--   loop, since the main loop is busy running the command that is to be
+--   aborted.  For the same reason a @status@ that arrives while the main
+--   loop has work is answered here, from what can be known without it.
 readRequests :: AgentEnv -> CommandQueue -> IO ()
 readRequests env queue = loop `catch` \ e -> do
     -- Nothing more will arrive: the stream is closed, or a line does
@@ -276,16 +301,130 @@ readRequests env queue = loop `catch` \ e -> do
         _         -> do
           case eitherDecodeStrict' (T.encodeUtf8 (T.pack line)) of
             Left err  -> post $ Malformed err
-            Right req -> do
-              hit <- if reqMethod req /= "abort" then return False else
-                atomically $ do
-                  n <- readTVar (envCounter env)
-                  modifyTVar' (abort queue) $ Just . maybe n (max n)
-                  readTVar (envRunning env)
-              post $ Incoming req hit
+            Right req
+              | reqMethod req == "abort" ->
+                  emit env . resultLine (reqId req) =<< abortNow env queue
+              | otherwise -> do
+                  -- Counted and posted in one transaction, so that an
+                  -- @abort@ sees every request ahead of it.
+                  early <- atomically $ do
+                    n <- readTVar (envPending env)
+                    let early = reqMethod req == "status" && n > 0
+                    unless early $ do
+                      writeTVar (envPending env) (n + 1)
+                      modifyTVar' (envPosted env) succ
+                      writeTChan (envRequests env) . Incoming req
+                        =<< readTVar (envPosted env)
+                    return early
+                  when early $
+                    emit env . resultLine (reqId req) =<< busyStatus env
           loop
 
   post x = atomically $ writeTChan (envRequests env) x
+
+-- | Act on an @abort@ and answer it.
+--
+--   The running command, if there is one, is interrupted, and the
+--   requests queued behind it are cancelled: each is answered with an
+--   @aborted@ error when the main loop reaches it.  Left queued, the
+--   next of them would as a rule reload the file that was just
+--   aborted, and the session would look as stuck as before.  A queued
+--   @close@ is kept, since it is how a client leaves.
+abortNow :: AgentEnv -> CommandQueue -> IO Value
+abortNow env queue = do
+  (running, cancelled) <- atomically $ do
+    n <- readTVar (envCounter env)
+    modifyTVar' (abort queue) $ Just . maybe n (max n)
+    posted  <- readTVar (envPosted env)
+    before  <- readTVar (envCancelled env)
+    writeTVar (envCancelled env) posted
+    serving <- readTVar (envServing env)
+    pending <- readTVar (envPending env)
+    running <- readTVar (envRunning env)
+    -- The requests not yet started are the last ones posted.
+    let waiting = pending - maybe 0 (const 1) serving
+    return (running, max 0 $ min waiting $ fromIntegral $ posted - before)
+  s <- readIORef (envSession env)
+  let text' = case (running, cancelled) of
+        (False, 0) -> "nothing was running"
+        (True,  0) -> "aborted the running command"
+        (r,     k) -> concat
+          [ if r then "aborted the running command and cancelled "
+                 else "cancelled "
+          , show k, if k == 1 then " queued request" else " queued requests"
+          ]
+  return $ object
+    [ "file"      .= (filePath <$> sesFile s)
+    , "revision"  .= sesRevision s
+    , "checked"   .= sesChecked s
+    , "resynced"  .= False
+    , "reloaded"  .= False
+    , "aborted"   .= running
+    , "cancelled" .= cancelled
+    , "text"      .= (text' :: String)
+    ]
+
+-- | The answer to a @status@ that arrives while the main loop is busy.
+--
+--   The question is most often asked of a command that seems stuck,
+--   and queued behind that command it would wait as long as it does.
+--   So it is answered from the state that other threads can read: the
+--   session record, the request being served, and the definition the
+--   benchmark is billing.  The goals belong to the type checker's state
+--   and are left out.
+busyStatus :: AgentEnv -> IO Value
+busyStatus env = do
+  s <- readIORef (envSession env)
+  (serving, pending, running) <- atomically $ (,,)
+    <$> readTVar (envServing env)
+    <*> readTVar (envPending env)
+    <*> readTVar (envRunning env)
+  now <- getMonotonicTime
+  -- Only a running command bills to an account; between the commands
+  -- of one request the last one's account is long closed.
+  checking <- if not running then return Nothing else do
+    (timings, acc) <- timingsSnapshot
+    return $ do
+      a    <- acc
+      name <- accountSubject a
+      return (name, fromMaybe 0 $ Trie.lookup a timings)
+  let queued  = pending - maybe 0 (const 1) serving
+      elapsed = fmap (\ sv -> round (1000 * (now - servSince sv)) :: Integer) serving
+      what sv = T.unpack (reqMethod $ servRequest sv) ++ case reqParams (servRequest sv) of
+        Object o | Just (String f) <- KeyMap.lookup "file" o -> ' ' : T.unpack f
+        _ -> ""
+      runningText = case serving of
+        Nothing -> "nothing yet"
+        Just sv -> concat $
+          [ what sv, " (", maybe "" show elapsed, " ms)" ] ++
+          [ concat [ ", checking ", name, " (", showMs t, " of CPU time)" ]
+          | Just (name, t) <- [checking] ]
+      text' = List.intercalate "\n" $
+        [ "agda:     " ++ versionWithCommitInfo
+        , "file:     " ++ maybe "(none loaded)" filePath (sesFile s)
+        , "revision: " ++ show (sesRevision s)
+        , "checked:  " ++ show (sesChecked s)
+        , "running:  " ++ runningText
+        ] ++
+        [ "queued:   " ++ show queued | queued > 0 ] ++
+        [ "goals:    (not available while a command runs)" ]
+  return $ object
+    [ "file"        .= (filePath <$> sesFile s)
+    , "revision"    .= sesRevision s
+    , "checked"     .= sesChecked s
+    , "resynced"    .= False
+    , "reloaded"    .= False
+    , "agdaVersion" .= versionWithCommitInfo
+    , "running"     .= flip fmap serving (\ sv -> object $
+        [ "method"    .= reqMethod (servRequest sv)
+        , "id"        .= reqId (servRequest sv)
+        , "elapsedMs" .= elapsed
+        ] ++ concat
+        [ [ "checking" .= name, "checkingMs" .= milliseconds t ]
+        | Just (name, t) <- [checking] ])
+    , "queued"      .= queued
+    , "text"        .= text'
+    ]
 
 -- | Serve requests until end of input or a @close@ request.
 mainLoop :: AgentEnv -> CommandM ()
@@ -298,15 +437,32 @@ mainLoop env = do
         writeIORef (envCurrentId env) Null
         emit env $ errorLine Null $ agentError ParseError err
       mainLoop env
-    Incoming req hit -> do
-      liftIO $ writeIORef (envCurrentId env) (reqId req)
-      done <- serve env hit req
+    Incoming req n -> do
+      since <- liftIO getMonotonicTime
+      -- Deciding and starting in one transaction, so that an @abort@
+      -- counts this request either as running or as cancelled.
+      cancelled <- liftIO $ atomically $ do
+        c <- readTVar (envCancelled env)
+        let cancelled = n <= c && reqMethod req /= "close"
+        unless cancelled $
+          writeTVar (envServing env) $ Just $ Serving req since
+        return cancelled
+      done <- if cancelled
+        then False <$ liftIO (emit env $ errorLine (reqId req) $
+               agentError AbortedError
+                 "cancelled by an abort before it started; the session is usable")
+        else do
+          liftIO $ writeIORef (envCurrentId env) (reqId req)
+          serve env req
+      liftIO $ atomically $ do
+        writeTVar (envServing env) Nothing
+        modifyTVar' (envPending env) pred
       unless done $ mainLoop env
 
 -- | Handle one request; return 'True' if the session should end.
-serve :: AgentEnv -> Bool -> AgentRequest -> CommandM Bool
-serve env hit req = do
-  reply <- withDisplayOptions req $ runExceptT $ dispatch env hit req
+serve :: AgentEnv -> AgentRequest -> CommandM Bool
+serve env req = do
+  reply <- withDisplayOptions req $ runExceptT $ dispatch env req
   liftIO $ emit env $ either (errorLine (reqId req)) (resultLine (reqId req)) reply
   return $ reqMethod req == "close"
 
@@ -1266,22 +1422,13 @@ moduleFile m2s m
 ------------------------------------------------------------------------
 -- * Methods
 
--- | Answer one request.  The 'Bool' is only consulted by @abort@: did
---   it interrupt a running command?
-dispatch :: AgentEnv -> Bool -> AgentRequest -> AgentM Value
-dispatch env hit req = case reqMethod req of
+-- | Answer one request.  (@abort@ never gets here: see 'abortNow'.)
+dispatch :: AgentEnv -> AgentRequest -> AgentM Value
+dispatch env req = case reqMethod req of
 
   "handshake" -> do
     fields <- sessionFields env noResync
     return $ object $ ("handshake" .= handshakeValue) : fields
-
-  "abort" -> do
-    fields <- sessionFields env noResync
-    return $ object $ fields ++
-      [ "aborted" .= hit
-      , "text"    .= (if hit then "aborted the running command"
-                      else "nothing was running" :: Text)
-      ]
 
   "close" -> do
     fields <- sessionFields env noResync
@@ -1297,11 +1444,14 @@ dispatch env hit req = case reqMethod req of
           , "file:     " ++ maybe "(none loaded)" filePath (sesFile s)
           , "revision: " ++ show (sesRevision s)
           , "checked:  " ++ show (sesChecked s)
+          , "running:  nothing"
           , "goals:    " ++ List.intercalate " "
               [ '?' : show (interactionId ii) | (ii, _) <- goals ]
           ]
     return $ object $ fields ++
       [ "agdaVersion" .= versionWithCommitInfo
+      , "running" .= Null
+      , "queued" .= (0 :: Int)
       , "goals" .= [ object [ "id" .= interactionId ii, "range" .= agentRange r ]
                    | (ii, r) <- goals ]
       , "text" .= text'

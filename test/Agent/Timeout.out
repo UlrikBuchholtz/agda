@@ -51,6 +51,7 @@ result:
 >>> 5 abort
 result:
   aborted: false
+  cancelled: 0
   checked: true
   file: "Timeout.agda"
   reloaded: false

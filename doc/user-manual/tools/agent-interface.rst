@@ -120,7 +120,7 @@ The verbs are:
      - Proof search (Mimer).  ``ARGS`` is passed to it, e.g. ``-t 5s``,
        or ``-l`` to list candidates instead of filling the goal.
    * - ``status``
-     - What the session has loaded.
+     - What the session has loaded, and what it is running.
    * - ``handshake``
      - Protocol and Agda version, methods, defaults.
    * - ``abort``
@@ -273,8 +273,12 @@ with a ``timeout`` error.  An ``abort`` request sent while another
 request is running does the same immediately, and that includes a
 ``buildIndex`` in progress, whose builder process is terminated.  In
 both cases the session survives and answers the next request correctly.
-The ``abort`` request's own answer says in ``aborted`` whether there was
-anything running to abort.
+An ``abort`` also cancels the requests queued behind the running one
+(except a ``close``): each is answered with an ``aborted`` error without
+being started, since the next of them would usually reload the very
+file whose check was just interrupted.  The ``abort`` request's own
+answer says in ``aborted`` whether there was anything running to abort,
+and in ``cancelled`` how many queued requests it cancelled.
 
 A timeout also says where it struck.  When it fired while a definition
 was being checked, the message names that definition and the CPU time
@@ -342,8 +346,15 @@ gets the same field.  On the command line:
 checking, serialisation, and the like.)
 
 Requests are executed one at a time, and one sent while another is
-running waits its turn — with the exception of ``abort``, which takes
-effect as soon as it is read.
+running waits its turn — with two exceptions, which are answered as
+soon as they are read.  One is ``abort``.  The other is ``status``,
+when Agda is busy: it then says what is running (``running``: the
+``method`` and ``id`` of the request, the wall-clock ``elapsedMs`` since
+it started, and, while a definition is being checked, its name in
+``checking`` and the CPU time spent on it in ``checkingMs``) and how
+many requests are ``queued`` behind it.  The goals belong to the busy
+type checker, so such an answer has no ``goals``.  An idle session
+answers ``status`` in turn, with ``running`` null.
 
 Methods
 -------
@@ -739,7 +750,8 @@ of the modes the handshake lists, defaulting per method.
      - ``handshake``
    * - ``status``
      -
-     - ``agdaVersion``, ``goals``
+     - ``agdaVersion``, ``running``, ``queued``, ``goals``
+       (absent while busy)
    * - ``load``
      - ``file``, ``args?``
      - ``goals``, ``hiddenGoals``, ``warnings``, ``errors``
@@ -814,9 +826,12 @@ of the modes the handshake lists, defaulting per method.
      - ``goal?``, ``args?``, ``normalise?``
      - as ``give``, or ``applied: false`` with ``solutions`` when
        ``args`` asked for a list
-   * - ``abort``, ``close``
+   * - ``abort``
      -
-     - ``aborted`` / ``closed``
+     - ``aborted``, ``cancelled``
+   * - ``close``
+     -
+     - ``closed``
 
 Display options
 ---------------
